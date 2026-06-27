@@ -51,11 +51,9 @@ if __name__ == "__main__" :
     model = lambda nS, nA : FCQNetwork(input_shape=nS, output_shape=nA,hidden_units=(256,256),device=device)
 
  
-    optimizer = lambda model, lr :Adam(params=model.parameter(), lr=lr) if args.optimizer == 0 else RMSprop(params=model.parameter(), lr=lr) if args.optimizer == 1 else optim.optim.SGD(params=model.parameter(), lr=lr)
+    optimizer = lambda model, lr :Adam(params=model.parameters(), lr=lr) if args.optimizer == 0 else RMSprop(params=model.parameters(), lr=lr) if args.optimizer == 1 else optim.optim.SGD(params=model.parameters(), lr=lr)
 
     env_name ="MountainCarContinuous-v0"
-    env = gym.make(id=env_name)
-    
 
     Agent = FittedAgent(env_name=env_name,
                         value_model_fn=model,
@@ -63,4 +61,4 @@ if __name__ == "__main__" :
                         value_optimizer_lr=0.01,
                         training_strategy_fn=Strategy
                         )
-    #Agent.interact()
+    Agent.interact()

@@ -46,8 +46,8 @@ class FittedAgent :
         self.nS, self.nA = self.observation_dim, self.action_dim
         print(f"Selected env = {self.env_name}\nnumber of states S = {self.nS}\nnumber of actions A = {self.nA}")
 
-        #self.online_model = value_model_fn(self.nS, self.nA)
-
+        self.online_model = value_model_fn(self.nS, self.nA)
+        self.optimizer =value_optimizer_fn(self.online_model,0.1)
 
         self.value_model_fn       = value_model_fn
         self.value_optimizer_fn   = value_optimizer_fn
