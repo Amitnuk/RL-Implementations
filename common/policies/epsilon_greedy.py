@@ -12,9 +12,12 @@ class EpsilonGreedyStrategy() :
                       state:torch.Tensor) :
 
         with torch.inference_mode() :
-            q_values = model(state).detach().cpu().numpy().squeeze()
+            q_values = model(state).detach().cpu().numpy()
+
+
         if np.random.randn() > self.epsilon:
             action = np.argmax(q_values)
         else :
             action = np.random.randint(q_values.shape[0])
+
         return action

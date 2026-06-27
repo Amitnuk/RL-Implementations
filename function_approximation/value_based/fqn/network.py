@@ -39,7 +39,7 @@ class FCQNetwork(nn.Module) :
         """
         if not isinstance(state,torch.Tensor) :
             state = torch.tensor(state,dtype=torch.float32, device=self.device)
-            state = state.unsqueeze(0) 
+            
         return self.q_net(state)
 
     

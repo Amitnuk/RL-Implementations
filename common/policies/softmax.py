@@ -12,7 +12,6 @@ class SoftMaxStrategy :
     def select_action(self, model:nn.Module, state:torch.Tensor) :
         
         q_values = model(state).detach().cpu().numpy()
-
         
         q_values = q_values - q_values.max()
         exp_q = np.exp(q_values/self.temperature)
