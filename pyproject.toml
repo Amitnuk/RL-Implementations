@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rl-implementations"
+version = "0.1.0"
+description = "Reinforcement Learning implementations (tabular + deep RL)"
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+    "numpy",
+    "torch",
+    "gymnasium",
+    "matplotlib"
+]
+
+[tool.setuptools]
+packages = {find = {}}
