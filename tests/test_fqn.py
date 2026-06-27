@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from function_approximation.value_based.fqn.QNetwork import FCQNetwork
+from function_approximation.value_based.fqn.network import FCQNetwork
 
 
 if __name__ == "__main__" :
