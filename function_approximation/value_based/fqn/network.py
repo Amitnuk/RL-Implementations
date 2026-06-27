@@ -21,7 +21,7 @@ class FCQNetwork(nn.Module) :
                          hidden_units=hidden_units,
                          activation_fn=F.relu)
         
-        if torch.cuda.is_available() :
+        if torch.cuda.is_available() and device != "cpu" :
             device = "cuda"
 
         self.device = torch.device(device=device)
