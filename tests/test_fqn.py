@@ -7,6 +7,7 @@ from function_approximation.value_based.fqn.agent import FittedAgent
 
 from common.policies.epsilon_greedy import EpsilonGreedyStrategy
 from common.policies.softmax import SoftMaxStrategy
+
 import gymnasium as gym
 import argparse
 
@@ -61,4 +62,4 @@ if __name__ == "__main__" :
                         value_optimizer_lr=0.01,
                         training_strategy_fn=Strategy
                         )
-    Agent.interact()
+    Agent.evaluate()

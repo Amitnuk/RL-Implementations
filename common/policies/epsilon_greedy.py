@@ -3,21 +3,21 @@ from torch import nn
 import numpy as np
 
 
-class EpsilonGreedyStrategy() :
+class EpsilonGreedyStrategy :
     def __init__(self, epsilon:float=0.1) :
         self.epsilon = epsilon
 
-    def select_action(self,
-                      model:nn.Module,
-                      state:torch.Tensor) :
+    def select_discret_action(self,
+                              model:nn.Module,
+                              state:torch.Tensor) :
 
         with torch.inference_mode() :
-            q_values = model(state).detach().cpu().numpy()
-
-
-        if np.random.randn() > self.epsilon:
+            q_values = model(state).detach().cpu().data.numpy().squeeze()
+        
+        if np.random.rand() > self.epsilon:
             action = np.argmax(q_values)
         else :
-            action = np.random.randint(q_values.shape[0])
+            action = np.random.randint(len(q_values))
+            assert len(q_values) == q_values.shape[0]
 
         return action

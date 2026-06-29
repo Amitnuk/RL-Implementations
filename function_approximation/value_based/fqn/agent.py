@@ -5,15 +5,11 @@ from torch.nn import MSELoss
 import numpy as np 
 import gymnasium as gym 
 from gymnasium.spaces import Box, Discrete
-
-
-
-
-
+from common.buffers.replaybuffer import ReplayBuffer
 
 class FittedQNet() :
     def __init__(self,
-                 Env,
+                 Env:gym.Env,
                  value_model_fn,
                  value_optimizer_fn,
                  value_optimizer_lr:float,
@@ -21,11 +17,21 @@ class FittedQNet() :
                  batch_size:int=32) :
 
         self.Env = Env
+        torch.manual_seed(12)
+        torch.cuda.manual_seed(12)
+        np.random.seed(12)
+        
 
-        if isinstance(self.Env.action_space,Box) :
-            self.action_dim = self.Env.action_space.shape[0]
-        elif isinstance(self.Env.action_space,Discrete) :
+        self.Env.observation_space.seed(12)
+        # NQF works with discrete actions
+        #if isinstance(self.Env.action_space,Box) :
+        #    self.action_dim = self.Env.action_space.shape[0]
+        #    self.low  = self.Env.action_space.low.item()
+        #    self.high = self.Env.action_space.high.item() 
+        if isinstance(self.Env.action_space,Discrete) :
             self.action_dim =self.Env.action_space.n
+            self.low  = 0
+            self.high = int(self.action_dim) - 1
         else:
             raise NotImplementedError(f"Unsupported action space: {type(self.Env.action_space)}")
 
@@ -38,50 +44,25 @@ class FittedQNet() :
         
         self.nS, self.nA = self.observation_dim, self.action_dim
         print(f"number of states S = {self.nS}\nnumber of actions A = {self.nA}")
-
+        print(f"Single State = {self.Env.observation_space.sample()}\nSingle Action = {self.Env.action_space.sample()}")
         
-        #self.value_model_fn       = value_model_fn
-        #self.value_optimizer_fn   = value_optimizer_fn
-        #self.value_optimizer_lr   = value_optimizer_lr 
-        #self.training_strategy_fn = training_strategy_fn
-        
-        #self.evaluation_strategy_fn= evaluation_strategy_fn
-        #self.batch_size=batch_size
-
         self.cummulative_reward_per_episdode = 0
+
         
         self.online_model = value_model_fn(self.nS, self.nA)
-        self.optimizer    = value_optimizer_fn(self.online_model,0.1)
-        self.training_strategy_fn = training_strategy_fn
         self.value_optimizer_lr   = value_optimizer_lr
+        self.optimizer    = value_optimizer_fn(self.online_model,self.value_optimizer_lr)
+        self.training_strategy_fn = training_strategy_fn
         self.batch_size=  batch_size
-        
+
     def iteration_step(self, state) :
         
-        action = self.training_strategy_fn.select_action(self.online_model,state)
+        action = self.training_strategy_fn.select_discret_action(self.online_model,state)
         new_state, reward, terminal, truncated, _ = self.Env.step(action=action)
-        is_terminated = terminal or truncated 
-        experience = (state, action, reward, new_state, float(is_terminated))
-        
+        is_terminated = terminal or truncated
+        experience = (state, action, reward, new_state, float(terminal))
         return new_state, is_terminated, experience 
-
-        
-    def train(self, max_episodes:int=1) :
-        self.online_model = self.value_model_fn(self.nS, self.nA)
-        self.optimizer    = self.value_optimizer_fn(self.online_model,0.1)
-        self.experience =[]
-        
-        state, _ = self.Env.reset()
-        for _ in range(max_episodes) :
-
-            self.experience = []
-
-            while True :
-                state, is_terminated, experience = self.iteration_step(state=state)
-                self.experience.append(experience)
-                if is_terminated :
-                    break
-    
+ 
 
 class FittedAgent :
     def __init__(self,
@@ -90,42 +71,81 @@ class FittedAgent :
                  value_optimizer_fn,
                  value_optimizer_lr:float,
                  training_strategy_fn,
-                 batch_size:int=32,
-                 max_buffer_size:int=1000) :
+                 gamma:float=0.99,
+                 batch_size:int=100,
+                 epochs:int=40) :
         
         self.env_name = env_name
         print(f"Selected env = {self.env_name}")        
         self.Env = gym.make(id=self.env_name,render_mode="human") 
         
-        self.QNet = FittedQNet(Env=self.Env,
-                               value_model_fn=value_model_fn,
-                               value_optimizer_fn=value_optimizer_fn,
-                               value_optimizer_lr=value_optimizer_lr,
-                               training_strategy_fn=training_strategy_fn)
+        QNet = FittedQNet(Env=self.Env,
+                          value_model_fn=value_model_fn,
+                          value_optimizer_fn=value_optimizer_fn,
+                          value_optimizer_lr=value_optimizer_lr,
+                          training_strategy_fn=training_strategy_fn)
+
+        self.gamma = gamma
         self.batch_size =batch_size
-        self.warmup = 0
-        
+        self.model = QNet.online_model
+        self.optimizer = QNet.optimizer
+        self.iteration_step  = QNet.iteration_step
+        self.epochs = epochs
+        self.buffer = ReplayBuffer(batch_size=self.batch_size)
+        self.learning_rate = value_optimizer_lr
+
     def act(self,state) :
-        return self.QNet.iteration_step(state=state)
+        return self.iteration_step(state=state)
         
-            
+    def load(self):
+        return self.buffer.sample()
+    
     def store(self,experience) :
-        self.buffer.append(experience)
-    
-    
-    def update(self) :
-        pass
+        self.buffer.store(experience=experience)
+    def clear(self) :
+         self.buffer.clear()
+    def update(self, experiences) :
+        states, actions, rewards, next_states, is_terminated = experiences
         
-    def interact(self):
+        states         = torch.tensor(states,device=self.model.device)
+        actions        = torch.tensor(actions,device=self.model.device)
+        rewards        = torch.tensor(rewards,device=self.model.device)
+        next_states    = torch.tensor(next_states,device=self.model.device)
+        is_terminated  = torch.tensor(is_terminated,device=self.model.device)
 
+       
+        max_a_q_sp = self.model(next_states).detach().max(1)[0].unsqueeze(1)
+        
+        td_target_qs = rewards +  self.gamma * max_a_q_sp * ( 1 - is_terminated )
+        
+        q_sa     = self.model(states).gather(1, actions)
+        
+        
+        td_errors  = td_target_qs - q_sa
+
+        value_losses = td_errors.pow(2).mul(0.5).mean()
+
+        self.optimizer.zero_grad()
+        value_losses.backward()
+        self.optimizer.step()
+
+    def evaluate(self):
+        rewards=[]
         state, _ = self.Env.reset()
-        self.buffer = []
-        while True :
-            
-            state, is_terminated, _ = self.act(state=state)
-            
-            if is_terminated :
-                break
+        
+        for _ in range(1) :
+            rewards.append(0.0)
+            while True :
+                
+                with torch.inference_mode() :
+                    q_values = self.model(state).detach().cpu().data.numpy().squeeze()
 
+                state, reward, terminal, truncated, _=  self.Env.step( np.argmax( q_values  ) )
+                rewards[-1] += reward
+                if terminal or truncated :
+                    self.Env.reset()
+                    break
+
+        return np.mean(rewards)
         
     
