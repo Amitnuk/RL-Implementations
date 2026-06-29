@@ -1,7 +1,6 @@
 # Goal
+[Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32)
 
-    [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32)
-    [Test Drive Unlimited: Solar Crown](https://store.steampowered.com/agecheck/app/1249970/)
 # TODO
 - [X] train module
 - [X] training cartpole 

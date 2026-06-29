@@ -9,8 +9,6 @@
 - [ ] [Double Q-Learning](https://arxiv.org/abs/1509.06461)
 - [ ] [Reinforce](https://proceedings.neurips.cc/paper_files/paper/1999/file/464d828b85b0bed98e80ade0a5c43b0f-Paper.pdf)
 - [ ] [SAC](https://arxiv.org/abs/1801.01290)
-- [ ] [...]
-- [ ] [...]
 - [ ] And more
 
 
