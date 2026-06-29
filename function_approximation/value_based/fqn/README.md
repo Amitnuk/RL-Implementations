@@ -1,8 +1,5 @@
 # Goal: 
-    Compare RL algorithms from tabular → deep RL
-# Usage 
-    python function_approximation_nn/value_based/fqn/train.py 
-
+    [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32)
 # TODO
 - [X] train module
 - [X] training cartpole 
