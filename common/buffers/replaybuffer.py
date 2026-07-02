@@ -30,15 +30,37 @@ class ReplayBuffer :
         self.idx = 0
         self.size = 0
         
-    def load(self) :
+    def load(self, batch_size=None) :
+
+        if batch_size != None : 
+            
+            experience = np.vstack(self.states[:batch_size]),\
+                        np.vstack(self.actions[:batch_size]), \
+                        np.vstack(self.rewards[:batch_size]),\
+                        np.vstack(self.next_states[:batch_size]),\
+                        np.vstack(self.terminals[:batch_size])
+            
+        else :
         
-        experience = np.vstack(self.states[:self.size]),\
-                     np.vstack(self.actions[:self.size]), \
-                     np.vstack(self.rewards[:self.size]),\
-                     np.vstack(self.next_states[:self.size]),\
-                     np.vstack(self.terminals[:self.size])
+            indices = np.array((np.arange(self.idx - self.batch_size, self.idx) % self.max_size)) 
         
+       
+       
+            experience = np.vstack(self.states[indices]),\
+                        np.vstack(self.actions[indices]), \
+                        np.vstack(self.rewards[indices]),\
+                        np.vstack(self.next_states[indices]),\
+                        np.vstack(self.terminals[indices])
+            
+        #print("s=",experience[0])
+        #print("a=",experience[1])
+        #print("r=",experience[2])
+        #print("n=",experience[3])
+        #print("t=",experience[4])
+        #exit()
+
         return experience
+    
     def sample(self, batch_size=None) :
 
 
@@ -52,19 +74,18 @@ class ReplayBuffer :
                      np.vstack(self.rewards[idx]),\
                      np.vstack(self.next_states[idx]),\
                      np.vstack(self.terminals[idx])
-
+       
         return experience
 
 
     def store(self, experience:Tuple ) ->None :
         state, action, reward, next_state,terminal = experience
-
+        assert isinstance(state, np.ndarray)
         self.states[self.idx]      = state
         self.actions[self.idx]     = action
         self.rewards[self.idx]     = reward
         self.next_states[self.idx] = next_state
         self.terminals[self.idx]   = terminal
-
         self.idx +=1
         self.idx = self.idx % self.max_size
         self.size +=1

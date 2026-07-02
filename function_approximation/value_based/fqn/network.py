@@ -27,7 +27,8 @@ class FCQNetwork(nn.Module) :
 
         self.device = torch.device(device=device)
         self.to(device=self.device)
-    
+        print("FCQNetwork")
+        
     def forward(self,state):
         """
         Given input state/observation, the network out puts Q
@@ -42,4 +43,14 @@ class FCQNetwork(nn.Module) :
             
         return self.q_net(state)
 
+
+    def load(self,batch) :
+        states, actions, rewards, next_states, is_terminals = batch
+
+        states = torch.from_numpy(states).float().to(self.device)
+        actions = torch.from_numpy(actions).long().to(self.device)
+        rewards = torch.from_numpy(rewards).float().to(self.device)
+        next_states = torch.from_numpy(next_states).float().to(self.device)
+        is_terminals = torch.from_numpy(is_terminals).float().to(self.device)
+        return states, actions, rewards, next_states, is_terminals
     

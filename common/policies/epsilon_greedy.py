@@ -18,6 +18,8 @@ class EpsilonGreedyStrategy :
             action = np.argmax(q_values)
         else :
             action = np.random.randint(len(q_values))
+            #print("action:",action)
             assert len(q_values) == q_values.shape[0]
-
+        if not isinstance(action ,int) :
+            action = action.item()
         return action

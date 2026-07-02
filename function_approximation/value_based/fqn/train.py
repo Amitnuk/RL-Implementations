@@ -42,12 +42,14 @@ def parse_args() :
     parser.add_argument("--env",type=str,default="lunarlander", help="environment name,LunarLander is the the default environment")
     parser.add_argument("--optimizer",default=0,type=int,choices=[0,1,2],help="The optimizer to select, 0 for Adam, 1 for RMSProp and 2 for SGD, Adam is default")
     parser.add_argument("--max_episodes",default=1,type=int,help="Max episodes, default value is one")
+    parser.add_argument("--buffer_size",default=10000,type=int,help="replay buffer size")
     parser.add_argument("--policy",default="egreedy",type=str,choices=POLICY_CHOICES,help="policy choices, egreedy is the default ")
     parser.add_argument("--epsilon",default=0.1,type=float, help="epsilon value for exploration")
     parser.add_argument("--gamma",default=0.99,type=float, help="discount value, default is 0.99")
     parser.add_argument("--batch_size",default=100,type=int, help="the size of the batch, default size is 100")
     parser.add_argument("--epochs",default=40,type=int, help="number of epochs, default is 40")
     parser.add_argument("--lr",default=0.003,type=float, help="learning rate, default is 0.003")
+
     
     return parser.parse_args()
     
@@ -62,11 +64,13 @@ def main() :
     else :
         device = "cpu"
         
+    
     print(f"{gym.pprint_registry()}")
     print(f"Training the agent in {args.env} environment on {args.use_gpu}")
     
     
-    model = lambda nS, nA : FCQNetwork(input_shape=nS, output_shape=nA,hidden_units=(256,256),device=device)
+    model = lambda nS, nA : FCQNetwork(input_shape=nS, output_shape=nA,hidden_units=(32,32),device=device)
+    #buffer_size = args.batch_size if args.buffer_size > args.batch_size else args.buffer_size
     Agent = FittedAgent(env_name=ENVIRONMENTS[args.env],
                         value_model_fn=model,
                         value_optimizer_fn=select_optimizer(args),

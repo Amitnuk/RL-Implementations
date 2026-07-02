@@ -6,16 +6,36 @@ import numpy as np
 class SoftMaxStrategy :
 
     def __init__(self, temperature:float=1.0) :
-        self.temperature = temperature
+        self.base= temperature * 1.5
+        self.min = 0.1
+        self.scale = 0.9999
+        self.step = 0
+        self.warmup_steps = 35000
+
+    def select_discret_action(self, model:nn.Module, state:torch.Tensor) :
+        
+        self.step += 1
+
+        if self.step < self.warmup_steps :
+            self.temperature = self.base
+        else :
+            self.temperature = max(self.min, self.base*self.scale**(self.step  - self.warmup_steps))
 
 
-    def select_action(self, model:nn.Module, state:torch.Tensor) :
-        
-        q_values = model(state).detach().cpu().numpy()
-        
+        q_values = model(state).detach().cpu().data.numpy().squeeze()
+
         q_values = q_values - q_values.max()
-        exp_q = np.exp(q_values/self.temperature)
-        probs = exp_q/exp_q.sum()
+        q_values = q_values/self.temperature 
+
+        exp_q = np.exp(q_values)
+        probs = exp_q/(exp_q.sum() + 1e-8)
+
+        probs = 0.9 * probs + 0.1 / q_values.shape[0]
+        probs = probs/sum(probs)
+        if self.step % 25 == 0 :
+            print(f"action selected: {np.random.choice(q_values.shape[0], p=probs)}\nprobs: {probs}\nq: {q_values}")
+
+
         return np.random.choice(q_values.shape[0], p=probs)
         
         

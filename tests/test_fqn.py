@@ -52,7 +52,7 @@ if __name__ == "__main__" :
     model = lambda nS, nA : FCQNetwork(input_shape=nS, output_shape=nA,hidden_units=(256,256),device=device)
 
  
-    optimizer = lambda model, lr :Adam(params=model.parameters(), lr=lr) if args.optimizer == 0 else RMSprop(params=model.parameters(), lr=lr) if args.optimizer == 1 else optim.optim.SGD(params=model.parameters(), lr=lr)
+    optimizer = lambda model, lr :Adam(params=model.parameters(), lr=lr) if args.optimizer == 0 else RMSprop(params=model.parameters(), lr=lr) if args.optimizer == 1 else SGD(params=model.parameters(), lr=lr)
 
     env_name ="CartPole-v1"
 
