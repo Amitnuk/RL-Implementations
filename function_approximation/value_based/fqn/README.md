@@ -31,6 +31,7 @@ All jokes aside, i found the motivation of [FNQI](https://link.springer.com/chap
 
 I am going bit off the rails here, but if you just ignore the policy gradient part on actor critic approach, one can derive fitted Q-iteration, if you are interested,  see [Video at 11:05](https://www.youtube.com/watch?v=QUbuBEY12u0&list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps&index=27). Ici c'est Paris, i mean [FNQI](https://link.springer.com/chapter/10.1007/11564096_32).
 
+Let us move move on
 
 ### CartPole 
 
@@ -70,3 +71,5 @@ python3 function_approximation/value_based/fqn/train.py --env lunarlander --max_
 # Notes
 
 # Results
+
+# More
