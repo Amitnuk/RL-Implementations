@@ -86,7 +86,7 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 
 # Results
 
-![Demo GIF](function_approximation/value_based/nfqi/results/gifs/cartpole.gif)
+![Demo GIF](https://github.com/Amitnuk/RL-Implementations/blob/main/function_approximation/value_based/nfqi/results/gifs/cartpole.gif)
 
 
 
