@@ -27,8 +27,8 @@ class MLP(nn.Module) :
 
         self.activation_fn = activation_fn
         for i in range(len(hidden_units)-1) :
-            self.hidden_layers.append(nn.Linear(in_features= hidden_units[i],
-                                                out_features=hidden_units[i+1]) )
+            self.hidden_layers.append( nn.Linear(in_features= hidden_units[i],
+                                                out_features=hidden_units[i+1]))
   
         self.input_layer.apply(self.init_weights_and_biases)
         self.hidden_layers.apply(self.init_weights_and_biases)
@@ -37,16 +37,13 @@ class MLP(nn.Module) :
         
     def init_weights_and_biases(self, module) :
 
-        if isinstance(module, nn.Linear) :
+        if isinstance(module, nn.Linear)  :
             nn.init.xavier_uniform_(module.weight) 
             nn.init.zeros_(module.bias)
             #print("Init", *[(name, param.shape) for name, param in module.named_parameters()])
 
     def forward(self,x):
         
-        if not isinstance(x, torch.Tensor) :
-            x = torch.tensor(x,dtype=torch.float32,device=self.device)
-
         x = self.activation_fn(self.input_layer(x))
 
         for hidden_layer in self.hidden_layers :

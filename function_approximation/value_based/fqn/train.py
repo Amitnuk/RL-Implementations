@@ -14,18 +14,21 @@ ENVIRONMENTS = {"cartpole":"CartPole-v1",
                 "mountaincar":"MountainCar-v0",
                 "acrobot":"Acrobot-v1"}
 
-POLICY_CHOICES = ["egreedy", "softmax", "gaussian", "greedy"]
+BEHAVIOUR_POLICY_CHOICES = ["egreedy", "softmax", "gaussian", "greedy"]
 
-def launch(args,Agent:FittedAgent) :
+def run_launcher(args,Agent:FittedAgent) :
     trainer = Trainer()
-    trainer.train(Agent=Agent,nb_episodes=args.max_episodes)
+    trainer.train(Agent=Agent,nb_episodes=args.max_episodes, ENV=args.env,DECAY_RATIO=args.decay_ratio)
     
 def select_policies(args) :
 
-    if args.policy == "egreedy" :
-        return EpsilonGreedyStrategy(epsilon=args.epsilon)
-    elif args.policy == "softmax" :
+    if args.behaviour_policy == "egreedy" :
+        return EpsilonGreedyStrategy(epsilon=args.epsilon, final_epsilon=args.final_epsilon)
+    elif args.behaviour_policy == "softmax" :
         return SoftMaxStrategy()
+    else :
+        print(f"{args.behaviour_policy} is not yet implemented, so epsilon greedy will be selected instead")
+        return EpsilonGreedyStrategy(epsilon=args.epsilon)
 
     
 def select_optimizer(args) :
@@ -43,12 +46,15 @@ def parse_args() :
     parser.add_argument("--optimizer",default=0,type=int,choices=[0,1,2],help="The optimizer to select, 0 for Adam, 1 for RMSProp and 2 for SGD, Adam is default")
     parser.add_argument("--max_episodes",default=1,type=int,help="Max episodes, default value is one")
     parser.add_argument("--buffer_size",default=10000,type=int,help="replay buffer size")
-    parser.add_argument("--policy",default="egreedy",type=str,choices=POLICY_CHOICES,help="policy choices, egreedy is the default ")
+    parser.add_argument("--seed", default=34,type=int, help="seeding, the default value is 34")
+    parser.add_argument("--behaviour_policy",default="egreedy",type=str,choices=BEHAVIOUR_POLICY_CHOICES,help="policy choices, egreedy is the default ")
     parser.add_argument("--epsilon",default=0.1,type=float, help="epsilon value for exploration")
     parser.add_argument("--gamma",default=0.99,type=float, help="discount value, default is 0.99")
     parser.add_argument("--batch_size",default=100,type=int, help="the size of the batch, default size is 100")
     parser.add_argument("--epochs",default=40,type=int, help="number of epochs, default is 40")
     parser.add_argument("--lr",default=0.003,type=float, help="learning rate, default is 0.003")
+    parser.add_argument("--decay_ratio", default=1.0, type=float, help="decay ratio for when epsilon when epsilon greedy is selected, default is one")
+    parser.add_argument("--final_epsilon", default=0.1, type=float, help="the lower epsilon can get for when epsilon when epsilon greedy is selected, default is one")
 
     
     return parser.parse_args()
@@ -69,7 +75,17 @@ def main() :
     print(f"Training the agent in {args.env} environment on {args.use_gpu}")
     
     
-    model = lambda nS, nA : FCQNetwork(input_shape=nS, output_shape=nA,hidden_units=(32,32),device=device)
+    if args.env == "cartpole" :
+        hidden_units = (512,128)
+    elif args.env == "lunarlander":
+        hidden_units = (256,256)
+    elif args.env == "acrobot" :
+        hidden_units = (256,256) 
+    else :
+        hidden_units = (32,16) 
+
+
+    model = lambda nS, nA : FCQNetwork(input_shape=nS, output_shape=nA,hidden_units=hidden_units,device=device)
     #buffer_size = args.batch_size if args.buffer_size > args.batch_size else args.buffer_size
     Agent = FittedAgent(env_name=ENVIRONMENTS[args.env],
                         value_model_fn=model,
@@ -78,8 +94,9 @@ def main() :
                         training_strategy_fn=select_policies(args=args),
                         gamma=args.gamma,
                         batch_size=args.batch_size,
-                        epochs=args.epochs)
-    launch(args=args,
+                        epochs=args.epochs,
+                        seed=args.seed)
+    run_launcher(args=args,
            Agent=Agent)
     
 if __name__ == "__main__" :

@@ -1,35 +1,48 @@
 # First Things First 
-This is repo is still in construction
+This repository is under active development. Some sections contain high-level intuition only and will later be formalized with mathematical detail and citations.
+Grammatical mistakes, inconsistencies, and informal explanations are to be expected.
 
 # Goal 
-Solving CartPole, Lunar Lander and Mountain Car using [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) 
+Solving CartPole, Lunar Lander, and Mountain Car Using [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) 
 
 ## Problem definition 
 
-In classic RL, we normally use tables, which can be viewed as a non-parametric representation and a key requirement fconvergence in this setting is that each state must be visited infinitely often.
+In classical reinforcement learning, we normally use tables, which can be viewed as a non-parametric representation. One of the key requirements for convergence in this setting is that each state or state-action pair must be visited infinitely often. This is normally achieved through exploration.
 
-One of the issues using tables is the capacity limitations, creating a table over a high-dimensional space, continuous space or a combination of both makes the problem intractable, although one could discretise the space, *but Nah, we ain't doing that, because FNQ duh. On a serious note*, a common alternative to the tabular method is to use parametric function approximators, which provide generalization across the state space and the function does not need to be linear. 
+One of the issues with using tables is their limited capacity. Creating a table over a high-dimensional space, a continuous space, or a combination of both makes the problem intractable. Although one could discretize the space, *but nah, we ain't doing that, because FNQ, duh.* On a serious note, a common alternative to tabular methods is to use parametric function approximators, which provide generalization across the state space, and the function does not need to be linear.
 
-A parametric function approximator allow the agent to learn from a limited number of samples without requiring (or even being able to achieve) infinite visitation of every state. This becomes especially important in continuous spaces, where exhaustive coverage is infeasible. However, generalization in reinforcement learning is a double-edged sword. While it enables sharing information across similar states, it also introduces coupling through shared parameters, meaning that updating the value function at one region of the state space can negatively affect other regions. 
+A parametric function approximator allows the agent to learn from a limited number of samples without requiring (or even being able to achieve) infinite visitation of every state. This becomes especially important in continuous spaces, where exhaustive coverage is infeasible. However, generalization in reinforcement learning is a double-edged sword. While it enables sharing information across similar states, it also introduces coupling through shared parameters, meaning that updating the value function in one region of the state space can negatively affect other regions.
 
-As a result, classical convergence guarantees may no longer hold when using function approximators, and learning dynamics may become unstable or even diverge depending on the function class, the algorithm, and the data distribution. And this is where [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) comes along. 
+As a result, classical convergence guarantees may no longer hold when using function approximators, and learning dynamics may become unstable or even diverge depending on the function class, the algorithm, and the data distribution. And this is where [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) comes in. 
 
 ## Fitted Neural Q-iteration
 
-Multiple approaches have tried to leverage the power of Neural Networks by representing value function as multi-layer perceptrons, but the results where not satisfatory the reason being what we already discussed. While generalization is desirable, it can destroy the effort done in some region of the state space based on the current weigth update in another region of the state space, resulting in a disvergence, because we never settle.
+Multiple approaches have tried to leverage the power of neural networks by representing the value function as multi-layer perceptrons, but the results were not satisfactory, the reason being what we already discussed. While generalization is desirable, it can undo the effort made in one region of the state space based on a weight update in another region, resulting in divergence, because the system never settles.
 
-* How to exploit positive properties of global approximator while avoiding the negative ones ?
+* How can we exploit the positive properties of global approximators while avoiding the negative ones ?
 
-The nouvel idea was, for each single datapoint during a update a previous knowledge must be available. Effectively trasitioning from online approach to a offline one.
-They implement this idea by storing all the previous experiences in terms of state-action  transitions in memory.
+The novel idea was that, for each data point used during an update, previous knowledge must be available, effectively transitioning from an online approach to an offline one.
+They implement this idea by storing all previous experiences in terms of state-action transitions in memory.
+
+For interessed reader i recommend the [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/), but overall what the algorithms does is :
+* 1. create the dataset of transitions using some policy
+* 2. create the bootstrapped target 
+* 3. minimize the error 
+
+where steps 2 and 3 are repeated *k times*, meaning we freeze the target network and then perform batch gradient descent. Oversimplifying each step reduces the problem to a fully static supervised learning problem.
+
 
 
 ## My Own Ramblings 
 
-Yeah, that was it, all they did was do batch gradient descent instead of stochastic gradient descent by keeping the transitions in a buffer. Then the [DQN](https://arxiv.org/abs/1711.07478) creator where like, euh what if we kept the transition for longer, and we kept replaying it even after ?
-All jokes aside, i found the motivation of [FNQI](https://link.springer.com/chapter/10.1007/11564096_32) more insteristing starting from batch [Actor Critic Methods](https://proceedings.neurips.cc/paper_files/paper/1999/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf).
+Yeah, that was it; all they did was do batch gradient descent instead of stochastic gradient descent by keeping the transitions in a buffer. Then the [DQN](https://arxiv.org/abs/1711.07478) creator was like, “euh, what if we kept the transition for longer, and we kept replaying it even after?”
 
-I am going bit off the rails here, but if you just ignore the policy gradient part on actor critic approach, one can derive fitted Q-iteration, if you are interested,  see [Video at 11:05](https://www.youtube.com/watch?v=QUbuBEY12u0&list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps&index=27). Ici c'est Paris, i mean [FNQI](https://link.springer.com/chapter/10.1007/11564096_32).
+All jokes aside, my assumption for [DQN](https://arxiv.org/abs/1711.07478) creation is most likely wrong. Although both algorithms have the same goal—solving the Bellman optimal equation—both approaches solve the problem differently.
+
+[DQN](https://arxiv.org/abs/1711.07478) does not transform the problem into a supervised learning (regression) problem; in its essence, it is more closely related to [FNQI](https://link.springer.com/chapter/10.1007/. More the details here [In contrustion]()
+
+
+I am going a bit off the rails here, but if you ignore the policy gradient part in the actor-critic approach, one can derive fitted Q-iteration. If you are interested, see [Video at 11:05](https://www.youtube.com/watch?v=QUbuBEY12u0&list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps&index=27). Ici c'est Paris, i mean [FNQI](https://link.springer.com/chapter/10.1007/11564096_32).
 
 Let us move move on
 
@@ -51,19 +64,20 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 ### Mountain Car
 
 # Usage 
-## Training 
-python3 function_approximation/value_based/fqn/train.py --env lunarlander --max_episodes 1000 --batch_size 1024  --gamma 1 --epsilon 0.5 --epochs 40 --optimizer 1 --lr 0.0003 --use_gpu
-python3 function_approximation/value_based/fqn/train.py --env lunarlander --max_episodes 1000 --batch_size 1024  --gamma 1 --epsilon 0.5 --epochs 50 --optimizer 1 --lr 0.0003 --use_gpu
+## Training
+
+## Testing
 
 # TODO
 - [X] train module
 - [X] training cartpole 
-- [ ] training lundar lander
-- [ ] training mountain car
-- [ ] training acrobot
+- [X] training lundar lander
+- [X] training mountain car
+- [X] training acrobot
 - [ ] testing module
-- [ ] restruncturing
+- [ ] conclusions
 - [ ] plots
+- [ ] a more rigorous explanation
 - [ ] And more
 
 
@@ -72,4 +86,5 @@ python3 function_approximation/value_based/fqn/train.py --env lunarlander --max_
 
 # Results
 
-# More
+
+

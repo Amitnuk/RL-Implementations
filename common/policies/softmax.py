@@ -10,7 +10,7 @@ class SoftMaxStrategy :
         self.min = 0.1
         self.scale = 0.9999
         self.step = 0
-        self.warmup_steps = 35000
+        self.warmup_steps = 1700000
 
     def select_discret_action(self, model:nn.Module, state:torch.Tensor) :
         
@@ -28,12 +28,12 @@ class SoftMaxStrategy :
         q_values = q_values/self.temperature 
 
         exp_q = np.exp(q_values)
-        probs = exp_q/(exp_q.sum() + 1e-8)
+        probs = exp_q/(exp_q.sum() + 1e-12)
 
-        probs = 0.9 * probs + 0.1 / q_values.shape[0]
+        #probs = 0.8 * probs + 0.2 / q_values.shape[0]
         probs = probs/sum(probs)
-        if self.step % 25 == 0 :
-            print(f"action selected: {np.random.choice(q_values.shape[0], p=probs)}\nprobs: {probs}\nq: {q_values}")
+        #if self.step % 50 == 0 :
+        #    print(f"action selected: {np.random.choice(q_values.shape[0], p=probs)}\nprobs: {probs}\nq: {q_values}")
 
 
         return np.random.choice(q_values.shape[0], p=probs)

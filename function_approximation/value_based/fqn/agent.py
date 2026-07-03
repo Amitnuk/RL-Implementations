@@ -6,6 +6,8 @@ import numpy as np
 import gymnasium as gym 
 from gymnasium.spaces import Box, Discrete
 from common.buffers.replaybuffer import ReplayBuffer
+import random
+
 
 class FittedQNet() :
     def __init__(self,
@@ -14,15 +16,17 @@ class FittedQNet() :
                  value_optimizer_fn,
                  value_optimizer_lr:float,
                  training_strategy_fn,
-                 batch_size:int=32) :
+                 batch_size:int=32,
+                 seed:int=34) :
 
         self.Env = Env
-        torch.manual_seed(34)
-        torch.cuda.manual_seed(34)
-        #np.random.seed(12)
-        
+        torch.manual_seed(seed=seed)
+        torch.cuda.manual_seed(seed=seed)
+        np.random.seed(seed=seed)
+        random.seed(seed)
 
-        #self.Env.observation_space.seed(12)
+        self.Env.action_space.seed(seed=seed)
+
         # NQF works with discrete actions
         #if isinstance(self.Env.action_space,Box) :
         #    self.action_dim = self.Env.action_space.shape[0]
@@ -63,6 +67,7 @@ class FittedQNet() :
         action = self.training_strategy_fn.select_discret_action(self.online_model,state)
         new_state, reward, terminal, truncated, _ = self.Env.step(action=action)
         is_terminated = terminal or truncated
+        #print(f"terminal={terminal}\ntruncated={truncated}")
         experience = (state, action, reward, new_state, float(terminal))
         return new_state, is_terminated, experience 
  
@@ -76,18 +81,21 @@ class FittedAgent :
                  training_strategy_fn,
                  gamma:float=0.99,
                  batch_size:int=100,
-                 epochs:int=40) :
+                 epochs:int=40,
+                 seed:int=34) :
         
         self.env_name = env_name
         print(f"Selected env = {self.env_name}")        
-        self.Env = gym.make(id=self.env_name,render_mode="human") 
+        self.Env = gym.make(id=self.env_name) #,render_mode="human"
         
         QNet = FittedQNet(Env=self.Env,
                           value_model_fn=value_model_fn,
                           value_optimizer_fn=value_optimizer_fn,
                           value_optimizer_lr=value_optimizer_lr,
-                          training_strategy_fn=training_strategy_fn)
+                          training_strategy_fn=training_strategy_fn,
+                          seed=seed)
 
+        self.seed = seed
         self.gamma = gamma
         self.batch_size =batch_size
         self.model = QNet.online_model
@@ -96,7 +104,11 @@ class FittedAgent :
         self.epochs = epochs
         self.buffer = ReplayBuffer(batch_size=self.batch_size)
         self.learning_rate = value_optimizer_lr
+        self.loss = 0
+        self.training_strategy_fn = training_strategy_fn
+        
         print("FittedAgent")
+
 
     def act(self,state) :
         return self.iteration_step(state=state)
@@ -106,26 +118,26 @@ class FittedAgent :
     
     def store(self,experience) :
         self.buffer.store(experience=experience)
+
+
     def clear(self) :
          self.buffer.clear()
+
+
     def update(self, experiences) :
         states, actions, rewards, next_states, is_terminated = experiences
         
-        #print(f"states={states}\naction={actions}\nrewards={rewards}\next_states={next_states}\nterminals={is_terminated}" )
-        #exit()
-        max_a_q_sp = self.model(next_states).detach().max(1)[0].unsqueeze(1)
-        
-        td_target_qs = rewards +  self.gamma * max_a_q_sp * ( 1 - is_terminated )
-        
         q_sa     = self.model(states).gather(1, actions)
         
-        #print(td_target_qs,"\n", q_sa)
-        #exit()
+        max_a_q_sp = self.model(next_states).detach().max(1)[0].unsqueeze(1)
+        td_target_qs = rewards +  self.gamma * max_a_q_sp * ( 1 - is_terminated )
         
         td_errors  = td_target_qs - q_sa
 
         value_losses = td_errors.pow(2).mul(0.5).mean()
 
+        self.loss = value_losses.detach().cpu().numpy()
+ 
         self.optimizer.zero_grad()
         value_losses.backward()
         self.optimizer.step()
@@ -149,4 +161,20 @@ class FittedAgent :
   
         return np.mean(rewards)
         
+    def q_value_stats(self,q_values):
+        """
+        q_values: tensor of shape [batch_size, num_actions]
+        """
+
+        top2 = torch.topk(q_values, k=2, dim=1).values
+        gap = top2[:, 0] - top2[:, 1]
+        return {
+            "q_mean": q_values.mean().item(),
+            "q_max": q_values.max().item(),
+            "q_min": q_values.min().item(),
+            "q_std": q_values.std().item(),
+            "mean_gap": gap.mean().item(),
+            "min_gap": gap.min().item(),
+            "max_gap": gap.max().item(),
+        }
     
