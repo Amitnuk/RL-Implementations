@@ -206,8 +206,10 @@ class NFQIAgent :
                     break
 
         print("num frames:", len(images))
-        imageio.mimsave("./function_approximation/value_based/nfqi/results/gifs/cartpole.gif", images, fps=30)
-
+        #imageio.mimsave("./function_approximation/value_based/nfqi/results/gifs/cartpole.gif", images, fps=30)
+        with imageio.get_writer("./function_approximation/value_based/nfqi/results/gifs/cartpole.gif", mode="I",fps=30,loop=0 ) as writer:
+             for img in images:
+                 writer.append_data(img)
 
     def q_value_stats(self, q_values):
         """
