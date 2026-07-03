@@ -1,15 +1,17 @@
 import torch
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
-from agent import FittedAgent
+from agent import NFQIAgent
 import os
 from itertools import count
+
+
 class Trainer :
     def __init__(self) :
         pass
 
 
-    def fqi_debug_step(self,Agent:FittedAgent, states):
+    def fqi_debug_step(self,Agent:NFQIAgent, states):
         with torch.inference_mode():
             q = Agent.model(states)
 
@@ -18,7 +20,7 @@ class Trainer :
         return {**q_stats}
     
     def train(self,
-              Agent:FittedAgent,
+              Agent:NFQIAgent,
               nb_episodes:int,
               ENV:str,
               DECAY_RATIO:float,
@@ -31,7 +33,7 @@ class Trainer :
         evaluation_score = 0
         evaluation_best_score = 0
         
-        LOG_PATH = f"common/loggins/{ENV}/{NB}/"
+        TENSORBOARD_PATH = f"runs/nfqi/{Agent.env_name[:-3].lower()}"
         behavior_policy = Agent.training_strategy_fn
         decay_eps = False
 
@@ -40,11 +42,11 @@ class Trainer :
             decay_eps = True
 
 
-        if not os.path.exists(LOG_PATH) :
-            print(f"{LOG_PATH} does not exits ")
-            exit()
+        if not os.path.exists(TENSORBOARD_PATH) :
+            print(f"{TENSORBOARD_PATH} does not exits ")
+            
 
-        self.writer = SummaryWriter(LOG_PATH)
+        self.writer = SummaryWriter(TENSORBOARD_PATH)
        
         EVAL_MODE = False
 
@@ -140,7 +142,7 @@ class Trainer :
             self.writer.add_scalar("Eval/AverageReward100",np.mean(self.episode_reward_eval[-100:]),episode)
             self.writer.add_scalar("Eval/AverageReward1000",np.mean(self.episode_reward_eval[-1000:]),episode)
 
-            if self.best_agent_score <= evaluation_score and evaluation_best_score > -200 :
+            if self.best_agent_score <= evaluation_score  :
                 checkpoint = {
                                 "model":Agent.model,
                                 "model_state_dict":Agent.model.state_dict(),

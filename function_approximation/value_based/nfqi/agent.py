@@ -7,7 +7,8 @@ import gymnasium as gym
 from gymnasium.spaces import Box, Discrete
 from common.buffers.replaybuffer import ReplayBuffer
 import random
-
+import imageio.v2 as imageio
+import matplotlib.pyplot as plt
 
 class FittedQNet() :
     def __init__(self,
@@ -72,7 +73,7 @@ class FittedQNet() :
         return new_state, is_terminated, experience 
  
     
-class FittedAgent :
+class NFQIAgent :
     def __init__(self,
                  env_name:str,
                  value_model_fn,
@@ -82,12 +83,25 @@ class FittedAgent :
                  gamma:float=0.99,
                  batch_size:int=100,
                  epochs:int=40,
-                 seed:int=34) :
+                 seed:int=34,
+                 mode:str=eval) :
         
+        self.mode = mode
         self.env_name = env_name
-        print(f"Selected env = {self.env_name}")        
-        self.Env = gym.make(id=self.env_name) #,render_mode="human"
+       
+     
+        if self.mode == "eval" :
+            self.Env = gym.make(id=self.env_name, render_mode="rgb_array")
+            
         
+        if self.mode == "train" :
+            self.Env = gym.make(id=self.env_name)
+            
+        print(f"Selected env = {self.env_name}")        
+
+        
+        
+
         QNet = FittedQNet(Env=self.Env,
                           value_model_fn=value_model_fn,
                           value_optimizer_fn=value_optimizer_fn,
@@ -107,7 +121,7 @@ class FittedAgent :
         self.loss = 0
         self.training_strategy_fn = training_strategy_fn
         
-        print("FittedAgent")
+        print("NFQIAgent")
 
 
     def act(self,state) :
@@ -142,11 +156,14 @@ class FittedAgent :
         value_losses.backward()
         self.optimizer.step()
 
-    def evaluate(self):
+    def evaluate(self, max_episodes:int=1):
+
         rewards=[]
         state, _ = self.Env.reset()
         
-        for _ in range(1) :
+        for i in range( max_episodes ) :
+            if self.mode == "eval" :
+                print(f"episode[{i+1}/{max_episodes}]")
             rewards.append(0.0)
             while True :
                 
@@ -157,11 +174,42 @@ class FittedAgent :
                 
                 rewards[-1] += reward
                 if terminal or truncated :
+                    if self.mode == "eval" :
+                        state, _ = self.Env.reset()
                     break
   
         return np.mean(rewards)
         
-    def q_value_stats(self,q_values):
+    def create_gif(self, max_episodes:int=1 ) :
+        images = []
+
+        self.Env = gym.make(id=self.env_name, render_mode="rgb_array")
+        state, _ = self.Env.reset()
+
+        for _ in  range(max_episodes) :
+            while True :
+
+                frame = self.Env.render()      # RGB image (numpy array)
+                images.append(frame)
+
+
+                #print(images[0].shape)
+                
+                
+                with torch.inference_mode() :
+                        q_values = self.model(state).detach().cpu().data.numpy().squeeze()
+
+                state, _, terminated, truncated, _ = self.Env.step(np.argmax( q_values  ))
+
+                if terminated or truncated:
+                    state, _ = self.Env.reset()
+                    break
+
+        print("num frames:", len(images))
+        imageio.mimsave("./function_approximation/value_based/nfqi/results/gifs/cartpole.gif", images, fps=30)
+
+
+    def q_value_stats(self, q_values):
         """
         q_values: tensor of shape [batch_size, num_actions]
         """

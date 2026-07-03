@@ -3,7 +3,7 @@ This repository is under active development. Some sections contain high-level in
 Grammatical mistakes, inconsistencies, and informal explanations are to be expected.
 
 # Goal 
-Solving CartPole, Lunar Lander, and Mountain Car Using [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) 
+Solving CartPole, Lunar Lander, and Mountain Car Using [Neural Fitted Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) 
 
 ## Problem definition 
 
@@ -15,7 +15,7 @@ A parametric function approximator allows the agent to learn from a limited numb
 
 As a result, classical convergence guarantees may no longer hold when using function approximators, and learning dynamics may become unstable or even diverge depending on the function class, the algorithm, and the data distribution. And this is where [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) comes in. 
 
-## Fitted Neural Q-iteration
+## Neural Fitted Q-iteration
 
 Multiple approaches have tried to leverage the power of neural networks by representing the value function as multi-layer perceptrons, but the results were not satisfactory, the reason being what we already discussed. While generalization is desirable, it can undo the effort made in one region of the state space based on a weight update in another region, resulting in divergence, because the system never settles.
 
@@ -24,7 +24,7 @@ Multiple approaches have tried to leverage the power of neural networks by repre
 The novel idea was that, for each data point used during an update, previous knowledge must be available, effectively transitioning from an online approach to an offline one.
 They implement this idea by storing all previous experiences in terms of state-action transitions in memory.
 
-For interessed reader i recommend the [Fitted Neural Q-iteration](https://link.springer.com/chapter/10.1007/), but overall what the algorithms does is :
+For interessed reader i recommend the [Neural Fitted Q-iteration](https://link.springer.com/chapter/10.1007/), but overall what the algorithms does is :
 * 1. create the dataset of transitions using some policy
 * 2. create the bootstrapped target 
 * 3. minimize the error 
@@ -39,10 +39,10 @@ Yeah, that was it; all they did was do batch gradient descent instead of stochas
 
 All jokes aside, my assumption for [DQN](https://arxiv.org/abs/1711.07478) creation is most likely wrong. Although both algorithms have the same goal—solving the Bellman optimal equation—both approaches solve the problem differently.
 
-[DQN](https://arxiv.org/abs/1711.07478) does not transform the problem into a supervised learning (regression) problem; in its essence, it is more closely related to [FNQI](https://link.springer.com/chapter/10.1007/. More the details here [In contrustion]()
+[DQN](https://arxiv.org/abs/1711.07478) does not transform the problem into a supervised learning (regression) problem; in its essence, it is more closely related to [NFQI](https://link.springer.com/chapter/10.1007/. More the details here [In contrustion]()
 
 
-I am going a bit off the rails here, but if you ignore the policy gradient part in the actor-critic approach, one can derive fitted Q-iteration. If you are interested, see [Video at 11:05](https://www.youtube.com/watch?v=QUbuBEY12u0&list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps&index=27). Ici c'est Paris, i mean [FNQI](https://link.springer.com/chapter/10.1007/11564096_32).
+I am going a bit off the rails here, but if you ignore the policy gradient part in the actor-critic approach, one can derive fitted Q-iteration. If you are interested, see [Video at 11:05](https://www.youtube.com/watch?v=QUbuBEY12u0&list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps&index=27). Ici c'est Paris, i mean [NFQI](https://link.springer.com/chapter/10.1007/11564096_32).
 
 Let us move move on
 
@@ -85,6 +85,8 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 # Notes
 
 # Results
+
+![Demo GIF](function_approximation/value_based/nfqi/results/gifs/cartpole.gif)
 
 
 

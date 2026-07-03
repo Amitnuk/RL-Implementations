@@ -3,11 +3,11 @@ from torch.optim import Adam, Optimizer, RMSprop, SGD
 import argparse
 import gymnasium as gym
 from trainer import Trainer
-from agent import FittedAgent
+from agent import NFQIAgent
 from network import FCQNetwork
 from common.policies.epsilon_greedy import EpsilonGreedyStrategy
 from common.policies.softmax import SoftMaxStrategy
-
+import os
 
 ENVIRONMENTS = {"cartpole":"CartPole-v1",
                 "lunarlander":"LunarLander-v3",
@@ -15,8 +15,11 @@ ENVIRONMENTS = {"cartpole":"CartPole-v1",
                 "acrobot":"Acrobot-v1"}
 
 BEHAVIOUR_POLICY_CHOICES = ["egreedy", "softmax", "gaussian", "greedy"]
+MODES = ["eval", "train"]
 
-def run_launcher(args,Agent:FittedAgent) :
+
+
+def run_launcher(args,Agent:NFQIAgent) :
     trainer = Trainer()
     trainer.train(Agent=Agent,nb_episodes=args.max_episodes, ENV=args.env,DECAY_RATIO=args.decay_ratio)
     
@@ -41,6 +44,7 @@ def select_optimizer(args) :
     
 def parse_args() :
     parser = argparse.ArgumentParser(description="")
+    parser.add_argument("--launch", type=str, choices=MODES, default=MODES[0], help="running mode, train or test, test is the default")
     parser.add_argument("--use_gpu",action="store_true",help="GPU usage, by the fault it is activated")
     parser.add_argument("--env",type=str,default="lunarlander", help="environment name,LunarLander is the the default environment")
     parser.add_argument("--optimizer",default=0,type=int,choices=[0,1,2],help="The optimizer to select, 0 for Adam, 1 for RMSProp and 2 for SGD, Adam is default")
@@ -72,7 +76,7 @@ def main() :
         
     
     print(f"{gym.pprint_registry()}")
-    print(f"Training the agent in {args.env} environment on {args.use_gpu}")
+    print(f"Training the agent in {args.env} environment on Cuda : {args.use_gpu}")
     
     
     if args.env == "cartpole" :
@@ -84,10 +88,13 @@ def main() :
     else :
         hidden_units = (32,16) 
 
+    if args.launch != MODES[1] and args.launch != MODES[0] :
+        print("must choose the launcing mode, train or eval")
+        exit()
 
     model = lambda nS, nA : FCQNetwork(input_shape=nS, output_shape=nA,hidden_units=hidden_units,device=device)
-    #buffer_size = args.batch_size if args.buffer_size > args.batch_size else args.buffer_size
-    Agent = FittedAgent(env_name=ENVIRONMENTS[args.env],
+    
+    Agent = NFQIAgent(env_name=ENVIRONMENTS[args.env],
                         value_model_fn=model,
                         value_optimizer_fn=select_optimizer(args),
                         value_optimizer_lr=args.lr,
@@ -95,9 +102,30 @@ def main() :
                         gamma=args.gamma,
                         batch_size=args.batch_size,
                         epochs=args.epochs,
-                        seed=args.seed)
-    run_launcher(args=args,
-           Agent=Agent)
+                        seed=args.seed,
+                        mode=args.launch)
+    
+
+    if args.launch == MODES[1] : 
+        print("Training Mode")
+        run_launcher(args=args,Agent=Agent)
+
+    if args.launch == MODES[0] :
+        CHECKPOINT_FILE = f"./results/nfqi/{args.env}/{args.env}_best.pt"
+        if os.path.isfile(CHECKPOINT_FILE) :
+            checkpoint = torch.load(CHECKPOINT_FILE,weights_only=False)
+            Agent.model.load_state_dict(checkpoint['model_state_dict'])
+            print(checkpoint["best_score"])
+        else :
+            print("dod not found the model path")
+            exit()
+        print("Evaluation Mode")
+        
+        
+        #Agent.evaluate(args.max_episodes)
+        Agent.create_gif()
+
+        
     
 if __name__ == "__main__" :
     main()
