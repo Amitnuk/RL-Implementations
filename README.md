@@ -2,83 +2,12 @@
 This repository is under active development. Some sections contain high-level intuition only and will later be formalized with mathematical detail and citations.
 Grammatical mistakes, inconsistencies, and informal explanations are to be expected.
 
-
-# Reinforcement Learning : 
-
-**Reinforcement Learning**, a *Machine Learning* paradigm where an agent learns to make sequential decisions through trial and error within a given environment. Sequential decision making can be formalized through a [Markov Decision Process](https://en.wikipedia.org/wiki/Markov_decision_process) (MDP) . 
-
-
-# Markov Decision Process
-An MDP is defined by the tuple **(S, A, r, P, γ, H)**.
-Where:
-*S* represents a set of possible states the agent can find itself in the environment.
-*A* represents a set of possible actions an agent can take.
-*r* represents a reward, a scalar signal given to the agent after an action is taken in a state.
-*P* probability distribution **p(s'|s,a)**, describing the state the agent transitions to after taking an action in the environment.
-*γ* is a discount factor that weights the importance of future rewards.
-*H* is the horizon, that specifies the number of interactions allowed in an episode.
-
-
-# Objective 
-The agent's goal is to find an **optimal policy** which maximizes the *expected return* (cumulative discounted rewards). 
-
-$$
-\mathbb{E}\left[\sum_{t=0}^{H} \gamma^t r_t \right]
-$$
-
-
-# Core Method Families:
-To reach this goal, the agent can leverage three different approaches, a *value-based*, *policy-based* and *model based*:
-
-
-## Value-based:
-The agent learns :
-* state-value function *v(s)* : the value of being in a state.
-* action-value function *q(s, a)*: the value of taking an action in a state.
-
-
-
-## Policy-based:
-The agent parameterizes and optimizes directly the optimal policy.
-The 
-
-$$
-\pi(a \mid s)
-$$
-
-
-
-## Model-based:
-The agent learns the model of the environment.
-
-# Representation of Value Functions and Policies:
-* Tabular:
-For lower-dimensional and discrete state/action space, value functions and the policy can be represented with a table(*which can be seen as a non-parametric function*).
-
-* Function approximation:
-For high-dimensional or continuous state/action space, the tabular representation becomes infeasible. One could discretize the space; a more modern approach is to leverage parametric functions through function approximation. 
-
-What makes function approximation attractive is *generalization*, which eliminates the need to infinitely visit a state often, as stated in GLIE (Greedy in the Limit with Infinite Exploration). In similar states, the agent should behave in the same manner, but using function approximation comes with a cost: the convergence of the policy to a greedy policy may not hold anymore. 
-
-
-Whether using tabular or function approximation, state value function or action value function can be expressed through a Bellman equation.
-
-$$
-V^{\pi}(s) = \sum_{a} \pi(a \mid s) \sum_{s'} P(s' \mid s, a) \left[ r(s, a, s') + \gamma V^{\pi}(s')\right ]
-$$
-
-
-The optimal policy is derived from a Bellman optimality equation.
-
-
-$$
-V^{*}(s) = \max_{a} \sum_{s'} P(s' \mid s, a)  \left[ r(s, a, s') + \gamma V^{\ast}(s') \right ]
-$$
-                                             
-
 # Scope of This Repository:
-This repo covers RL algorithms ranging from :
-* tabular representation
+
+As Richard P. Feynman once said, "What I cannot create, I do not understand." This repository reflects that philosophy through the implementation of reinforcement learning algorithms from scratch. Beyond studying the theory, the goal is to develop a deeper understanding of the underlying concepts by translating them into working code, while identifying and correcting gaps in my own understanding along the way.
+
+For that, this repository covers RL algorithms ranging from :
+* tabular representation.
 * function approximation.
 
 # Evironments: 
@@ -93,4 +22,20 @@ All the environments used in this repo are part of [Gymnasium](https://gymnasium
 - [ ] [SAC](https://arxiv.org/abs/1801.01290)
 - [ ] Tabular : SARSA, Q Learning, etc
 - [ ] And more
+
+
+
+# Reinforcement Learning : 
+
+**Reinforcement Learning**, a *Machine Learning* paradigm where an agent learns to make sequential decisions through trial and error within a given environment. 
+
+# Objective 
+The **Reinforcement Learning** goal is to find an **optimal policy**. A *policy* can be thought intuitively as brain of the agent, where for a given state, the policy ouputs the the action that better helps the agents reach its own goal. The agent goal is to maximize the long term reward.
+
+Broadly, RL methods can be categorized into:
+* *Value-based methods*
+* *Policy-based methods*
+* *Model-based methods*
+
+This repository only covers *Value-based methods* and *Policy-based methods*
 
