@@ -8,7 +8,7 @@ from network import FCQNetwork
 from common.policies.epsilon_greedy import EpsilonGreedyStrategy
 from common.policies.softmax import SoftMaxStrategy
 import os
-
+ 
 ENVIRONMENTS = {"cartpole":"CartPole-v1",
                 "lunarlander":"LunarLander-v3",
                 "mountaincar":"MountainCar-v0",
@@ -127,7 +127,7 @@ def main() :
         
         
         Agent.evaluate(args.max_episodes)
-        #Agent.create_gif()
+        Agent.create_gif()
 
         
     

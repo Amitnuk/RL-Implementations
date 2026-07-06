@@ -104,7 +104,7 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 ## Graphs
 ### Cartpole  
 
-| Moving Average Reward(Eval) | Total Average Reward(eval) |
+| Moving Average Reward(Eval) | Total Average Reward(Eval) |
 |----------|----------|
 | ![Moving Average Reward(Eval)](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/cartpoleaveragereward1000.png) | ![Total Average Reward](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/cartpolereward.png) |
 
@@ -113,8 +113,11 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 
 ## Figures 
 ### Lunar lander
-![Lunar Lander](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/lunarlander.gif)
+![Cartpole](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/cartpole.gif)
 
+
+### Lunar lander
+![Lunar Lander](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/lunarlander.gif)
 
 
 

@@ -149,7 +149,7 @@ class NFQIAgent :
   
         return np.mean(rewards)
         
-    def create_gif(self, max_episodes:int=1 ) :
+    def create_gif(self,max_episodes:int=1  ) :
         images = []
 
         self.Env = gym.make(id=self.env_name, render_mode="rgb_array")
@@ -175,7 +175,9 @@ class NFQIAgent :
                     break
 
         print("num frames:", len(images))
-        with imageio.get_writer("./function_approximation/value_based/nfqi/results/gifs/cartpole.gif", mode="I",fps=30,loop=0 ) as writer:
+        FileToSave = f"./experiments/figures/{self.env_name[:-3].lower()}.gif"
+       
+        with imageio.get_writer(FileToSave, mode="I",fps=30,loop=0 ) as writer:
              for img in images:
                  writer.append_data(img)
 
