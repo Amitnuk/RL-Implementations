@@ -72,7 +72,7 @@ The optimal policy is derived from a Bellman optimality equation.
 
 
 $$
-V^{*}(s) = \max_{a} \sum_{s'} P(s' \mid s, a)\left[r(s, a, s') + \gamma V^{*}(s')\right]
+V^{*}(s) = \max_{a} \sum_{s'} P(s' \mid s, a) \left[ r(s, a, s') + \gamma V^{*}(s')\right ]
 $$
 
 
