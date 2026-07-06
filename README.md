@@ -5,7 +5,7 @@ Grammatical mistakes, inconsistencies, and informal explanations are to be expec
 
 # Reinforcement Learning : 
 
-**Reinforcement Learning**, a *Machine Learning* paradigm where an agent learns to make sequential decisions through trial and error within a given environment. Sequential decision making can be formalized through a [Markov Decision Process](https://en.wikipedia.org/wiki/Markov_decision_process)(MDP) . 
+**Reinforcement Learning**, a *Machine Learning* paradigm where an agent learns to make sequential decisions through trial and error within a given environment. Sequential decision making can be formalized through a [Markov Decision Process](https://en.wikipedia.org/wiki/Markov_decision_process) (MDP) . 
 
 
 # Markov Decision Process
@@ -23,26 +23,25 @@ Where:
 The agent's goal is to find an **optimal policy** which maximizes the *expected return* (cumulative discounted rewards). 
 
 $$
-\mathbb{E}\left[\sum_{t=0}^{H} \gamma^t r_t \right]
+\mathbb{E}\left[\sum_{t=0}^{H} \gamma^t r_t \right]\tag{1}
 $$
 
 
 # Core Method Families:
-To reach this goal, the agent can leverage two different approaches, a *value-based*, and *policy-based* :
+To reach this goal, the agent can leverage three different approaches, a *value-based*, *policy-based* and *model based*:
 
 
 ## Value-based:
-the agent learns :
+The agent learns :
 * state-value function *v(s)* : the value of being in a state.
 * action-value function *q(s, a)*: the value of taking an action in a state.
 
 ## Policy-based:
-the agent parameterizes and optimizes directly the optimal policy.
+The agent parameterizes and optimizes directly the optimal policy.
 $\pi(a \mid s)$
 
-
-There is a method that combines both approaches, **actor-critics**. 
-
+## Model-based
+The agent learns the model of the environment.
 
 # Representation of Value Functions and Policies:
 * Tabular:
