@@ -14,9 +14,9 @@ This repository covers RL algorithms ranging from :
 All the environments used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
 
 #### Background 
-As with most (if not all) [Gymnasium](https://gymnasium.farama.org) environments is assumed to be an [MDP](https://en.wikipedia.org/wiki/Markov_decision_process) which is remains unknown to the agent. As consequence, it requires us to interact with the environment to samples transitions through agent–environment interaction. 
+As with most (if not all) [Gymnasium](https://gymnasium.farama.org) environments are assumed to be an [MDPs](https://en.wikipedia.org/wiki/Markov_decision_process) which is remains unknown to the agent. As consequence, it requires the agent to interact with the environment to samples transitions through agent–environment interaction. 
 
-The agent starts by receiving an initial observation, must select an action, which results in environment changing its state. The environment returns a reward and the new state/observation to the agent, and this process repeats until a termination condition is reached. 
+The agent starts by receiving an initial observation, it must select an action, which results in environment changing its state. The environment returns a reward and the new state/observation to the agent, and this process repeats until a termination condition is reached. 
 
 ### Lunar Lander 
 The Lunar Lander environment simulates the landing a small rocket on the moon surface, the rocket has 3 engines. 
