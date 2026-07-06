@@ -5,7 +5,26 @@ Grammatical mistakes, inconsistencies, and informal explanations are to be expec
 # Goal 
 Solving CartPole, Lunar Lander, and Mountain Car Using [Neural Fitted Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) 
 
-## Problem definition 
+# Neural Fitted Q-iteration
+
+## Introduction
+
+NFQI, a special case of *Fitted Q-iteration* algorithms, this algorithm mitigates the problem that arise when using multi-layer perceptron as function approximator. 
+Function approximator, such MLP, works on a global level which helps leveraging *generalization*. Althought, *generalization* is desirable property, it comes with a caveat in *RL*. Since weight parameters are coupled and the Bellman backups are use instead, in absence of true labels, to guide the learning, as a consequence *updating a weight in a given region of the state space can impact negatively in other reagions. and thus destroying the all the progress done in other regions.* 
+
+Function approximator, a part of the deadly triad in *RL*, alleviate the conditions in *GLIE*. However the convergence guarantees may not hold.
+
+## Algorithm 
+\begin{aligned}
+(1)\;& \text{Collect dataset } \mathcal{D} = \{(s_i, a_i, s'_i, r_i)\} \\
+\\
+(2)\;& y_i \leftarrow r_i + \gamma \max_{a'} Q_\phi(s'_i, a') \\
+\\
+(3)\;& \phi \leftarrow \arg\min_\phi \sum_i \left( Q_\phi(s_i, a_i) - y_i \right)^2
+\end{aligned}
+$$
+a bellman  operator + poroject, equation and all, this just a placehoder for you
+
 
 In classical reinforcement learning, we normally use tables, which can be viewed as a non-parametric representation. One of the key requirements for convergence in this setting is that each state or state-action pair must be visited infinitely often. This is normally achieved through exploration.
 
