@@ -101,7 +101,10 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 # Notes
 
 # Results
+## Graphs 
 
+
+## Figures
 ![Alt text](https://github.com/Amitnuk/RL-Implementations/blob/main/function_approximation/value_based/nfqi/results/gifs/cartpole.gif)
 
 
