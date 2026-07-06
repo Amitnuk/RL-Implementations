@@ -62,23 +62,6 @@ $$
 where (2) and (3) are repeated *k* times. Step (2) give us fixed bellman backups and step (3) minimizes the bellman error.
 
 
-### CartPole 
-
-### Lunar Lander 
-The Lunar Lander environment simulates landing a small rocket on the moon surface. 
-The environment is available in [Gymnasium](https://gymnasium.farama.org) 
-
-#### Background 
-As with most (if not all) [Gymnasium](https://gymnasium.farama.org) environments is assumed to be an [MDP](https://en.wikipedia.org/wiki/Markov_decision_process) which is remains unknown to the agent. As consequence, it requires us to interact with the environment to samples transitions through agent–environment interaction. 
-
-The agent starts by receiving an initial observation, selects an action, and sends it to the environment. The environment returns a reward and the next observation, and this process repeats until a termination condition is reached. 
-
-In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) the observation space is an 8-dimensional continuous vector and the action space is reresented with 4 discrete action ranging for 0 to 3. The observation space is a lower dimensional space, but being continuous makes it hard for classic reinforcement learning, one could discretize the observation space which has is own issues but a better approach is to use parametric function approximator instead of non parametric one. 
-
-
-
-### Mountain Car
-
 # Usage 
 ## Training
 

@@ -10,10 +10,35 @@ This repository covers RL algorithms ranging from :
 * *Tabular representation.*
 * *Function approximation.*
 
-# Environments and Development Framework: 
+# Environments: 
 All the environments used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
-As for the development frameworwork, I use PyTorch and tensorboard to experiment tracking.
 
+#### Background 
+As with most (if not all) [Gymnasium](https://gymnasium.farama.org) environments is assumed to be an [MDP](https://en.wikipedia.org/wiki/Markov_decision_process) which is remains unknown to the agent. As consequence, it requires us to interact with the environment to samples transitions through agent–environment interaction. 
+
+The agent starts by receiving an initial observation, must select an action, which results in environment changing its state. The environment returns a reward and the new state/observation to the agent, and this process repeats until a termination condition is reached. 
+
+### Lunar Lander 
+The Lunar Lander environment simulates the landing a small rocket on the moon surface, the rocket has 3 engines. 
+
+In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) the observation space is an 8-dimensional continuous vector, representing landing position x,y, the velocity in each axis, the angle and two boolean representing the contact of each leg with the ground.
+
+The action space is reresented with 4 discrete action ranging for 0 to 3 :
+
+* 0: do nothing
+* 1: fire left orientation engine
+* 2: fire main engine
+* 3: fire right orientation engine
+
+
+### Cartpole 
+The Cartpole environment simulates the balacing of pole attached to a cart.
+
+In [Cartpole](https://gymnasium.farama.org/environments/classic_control/cart_pole/) the observation space is an 4-dimensional continuous vector, representing  the cart position, the cart velocity, the pole angle and the pole angle speed.
+The action space is reresented with 2 discrete action ranging for 0 to 1 : 
+
+* 0: Push cart to the left
+* 1: Push cart to the right
 
 # TODO 
 - [X] [Neural Fitted Q Iteration](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/nfqi)
