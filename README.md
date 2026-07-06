@@ -64,8 +64,7 @@ RL-Implementations/
 │   ├── networks/
 │   ├── buffers/
 │   ├── policies/
-│   ├── utils/
-│   └── figures/
+│   └── utils/
 │
 └── experiments/
     ├── logs/

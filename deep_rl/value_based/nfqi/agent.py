@@ -9,70 +9,9 @@ from common.buffers.replaybuffer import ReplayBuffer
 import random
 import imageio.v2 as imageio
 import matplotlib.pyplot as plt
+from network import FCQNetwork
 
-class FittedQNet() :
-    def __init__(self,
-                 Env:gym.Env,
-                 value_model_fn,
-                 value_optimizer_fn,
-                 value_optimizer_lr:float,
-                 training_strategy_fn,
-                 batch_size:int=32,
-                 seed:int=34) :
 
-        self.Env = Env
-        torch.manual_seed(seed=seed)
-        torch.cuda.manual_seed(seed=seed)
-        np.random.seed(seed=seed)
-        random.seed(seed)
-
-        self.Env.action_space.seed(seed=seed)
-
-        # NQF works with discrete actions
-        #if isinstance(self.Env.action_space,Box) :
-        #    self.action_dim = self.Env.action_space.shape[0]
-        #    self.low  = self.Env.action_space.low.item()
-        #    self.high = self.Env.action_space.high.item() 
-        if isinstance(self.Env.action_space,Discrete) :
-            self.action_dim =self.Env.action_space.n
-            self.low  = 0
-            self.high = int(self.action_dim) - 1
-        else:
-            raise NotImplementedError(f"Unsupported action space: {type(self.Env.action_space)}")
-
-        if isinstance(self.Env.observation_space,Box) :
-            self.observation_dim = self.Env.observation_space.shape[0]
-        elif isinstance(self.Env.observation_space,Discrete) :
-            self.observation_dim =self.Env.observation_space.n
-        else:
-            raise NotImplementedError(f"Unsupported onservation space: {type(self.Env.observation_space)}")
-        
-        self.nS, self.nA = self.observation_dim, self.action_dim
-        print(f"number of states S = {self.nS}\nnumber of actions A = {self.nA}")
-        print(f"Single State = {self.Env.observation_space.sample()}\nSingle Action = {self.Env.action_space.sample()}")
-        
-        self.cummulative_reward_per_episdode = 0
-
-        
-        self.online_model = value_model_fn(self.nS, self.nA)
-        
-        self.value_optimizer_lr   = value_optimizer_lr
-        self.optimizer    = value_optimizer_fn(self.online_model,self.value_optimizer_lr)
-        self.training_strategy_fn = training_strategy_fn
-        self.batch_size=  batch_size
-
-        print("FittedQNet")
-
-    def iteration_step(self, state) :
-        
-        action = self.training_strategy_fn.select_discret_action(self.online_model,state)
-        new_state, reward, terminal, truncated, _ = self.Env.step(action=action)
-        is_terminated = terminal or truncated
-        #print(f"terminal={terminal}\ntruncated={truncated}")
-        experience = (state, action, reward, new_state, float(terminal))
-        return new_state, is_terminated, experience 
- 
-    
 class NFQIAgent :
     def __init__(self,
                  env_name:str,
@@ -99,22 +38,45 @@ class NFQIAgent :
             
         print(f"Selected env = {self.env_name}")        
 
-        
-        
+        torch.manual_seed(seed=seed)
+        torch.cuda.manual_seed(seed=seed)
+        np.random.seed(seed=seed)
+        random.seed(seed)
 
-        QNet = FittedQNet(Env=self.Env,
-                          value_model_fn=value_model_fn,
-                          value_optimizer_fn=value_optimizer_fn,
-                          value_optimizer_lr=value_optimizer_lr,
-                          training_strategy_fn=training_strategy_fn,
-                          seed=seed)
+        self.Env.action_space.seed(seed=seed)
 
+        if isinstance(self.Env.action_space,Discrete) :
+            self.action_dim =self.Env.action_space.n
+            self.low  = 0
+            self.high = int(self.action_dim) - 1
+        else:
+            raise NotImplementedError(f"Unsupported action space: {type(self.Env.action_space)}")
+
+        if isinstance(self.Env.observation_space,Box) :
+            self.observation_dim = self.Env.observation_space.shape[0]
+        elif isinstance(self.Env.observation_space,Discrete) :
+            self.observation_dim =self.Env.observation_space.n
+        else:
+            raise NotImplementedError(f"Unsupported onservation space: {type(self.Env.observation_space)}")
+        
+        self.nS, self.nA = self.observation_dim, self.action_dim
+        print(f"number of states S = {self.nS}\nnumber of actions A = {self.nA}")
+        print(f"Single State = {self.Env.observation_space.sample()}\nSingle Action = {self.Env.action_space.sample()}")
+        
+        self.cummulative_reward_per_episdode = 0
+
+        
+        self.model:FCQNetwork = value_model_fn(self.nS, self.nA)
+        
+        self.value_optimizer_lr   = value_optimizer_lr
+        self.optimizer    = value_optimizer_fn(self.model,self.value_optimizer_lr)
+        self.training_strategy_fn = training_strategy_fn
+        self.batch_size=  batch_size
+        
         self.seed = seed
         self.gamma = gamma
         self.batch_size =batch_size
-        self.model = QNet.online_model
-        self.optimizer = QNet.optimizer
-        self.iteration_step  = QNet.iteration_step
+
         self.epochs = epochs
         self.buffer = ReplayBuffer(batch_size=self.batch_size)
         self.learning_rate = value_optimizer_lr
@@ -137,7 +99,14 @@ class NFQIAgent :
     def clear(self) :
          self.buffer.clear()
 
-
+    def iteration_step(self, state) :
+        
+        action = self.training_strategy_fn.select_discret_action(self.model,state)
+        new_state, reward, terminal, truncated, _ = self.Env.step(action=action)
+        is_terminated = terminal or truncated
+        experience = (state, action, reward, new_state, float(terminal))
+        return new_state, is_terminated, experience 
+    
     def update(self, experiences) :
         states, actions, rewards, next_states, is_terminated = experiences
         
@@ -206,7 +175,6 @@ class NFQIAgent :
                     break
 
         print("num frames:", len(images))
-        #imageio.mimsave("./function_approximation/value_based/nfqi/results/gifs/cartpole.gif", images, fps=30)
         with imageio.get_writer("./function_approximation/value_based/nfqi/results/gifs/cartpole.gif", mode="I",fps=30,loop=0 ) as writer:
              for img in images:
                  writer.append_data(img)

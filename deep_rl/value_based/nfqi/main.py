@@ -19,8 +19,8 @@ MODES = ["eval", "train"]
 
 
 
-def run_launcher(args,Agent:NFQIAgent) :
-    trainer = Trainer()
+def run_launcher(args,Agent:NFQIAgent,lowest_evaluation_score:int) :
+    trainer = Trainer(lowest_evaluation_score=lowest_evaluation_score)
     trainer.train(Agent=Agent,nb_episodes=args.max_episodes, ENV=args.env,DECAY_RATIO=args.decay_ratio)
     
 def select_policies(args) :
@@ -81,12 +81,16 @@ def main() :
     
     if args.env == "cartpole" :
         hidden_units = (512,128)
+        lowest_evaluation_score = 0
     elif args.env == "lunarlander":
         hidden_units = (256,256)
+        lowest_evaluation_score = 0
     elif args.env == "acrobot" :
         hidden_units = (256,256) 
+        lowest_evaluation_score = -100
     else :
         hidden_units = (4,4) 
+        lowest_evaluation_score = -200
 
     if args.launch != MODES[1] and args.launch != MODES[0] :
         print("must choose the launcing mode, train or eval")
@@ -108,7 +112,7 @@ def main() :
 
     if args.launch == MODES[1] : 
         print("Training Mode")
-        run_launcher(args=args,Agent=Agent)
+        run_launcher(args=args,Agent=Agent, lowest_evaluation_score=lowest_evaluation_score)
 
     if args.launch == MODES[0] :
         CHECKPOINT_FILE = f"./results/nfqi/{args.env}/{args.env}_best.pt"
