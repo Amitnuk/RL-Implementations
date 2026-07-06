@@ -59,6 +59,9 @@ This repo covers RL algorithms ranging from :
 * tabular representation
 * function approximation.
 
+# Evironment 
+All the environment used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
+
 
 # TODO 
 - [X] [Fitted Neural Q Iteration](https://github.com/Amitnuk/RL-Implementations/tree/main/function_approximation/value_based/nfqi)
