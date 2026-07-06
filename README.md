@@ -24,6 +24,66 @@ All the environments used in this repo are part of [Gymnasium](https://gymnasium
 - [ ] And more
 
 
+# Repository Structure
+
+RL-Implementations/
+│
+├── tabular/
+│   ├── dynamic_programming/
+│   ├── q_learning/
+│   └── sarsa/
+│
+├── deep_rl/
+│
+│   ├── value_based/
+│   │   ├── nfqi/
+│   │   ├── dqn/
+│   │   └── double_dqn/
+│   │
+│   ├── policy_gradient/
+│   │   └── reinforce/
+│   │
+│   └── actor_critic/
+│       │
+│       ├── on_policy/
+│       │   ├── ppo/
+│       │   └── trpo/
+│       │
+│       └── off_policy/
+│           ├── ddpg/
+│           ├── td3/
+│           └── sac/
+│
+├── common/
+│   ├── networks/
+│   ├── buffers/
+│   ├── policies/
+│   ├── utils/
+│   └── figures/
+│
+└── experiments/
+    ├── logs/
+    │   ├── nfqi/
+    │   ├── dqn/
+    │   ├── double_dqn/
+    │   ├── ddpg/
+    │   ├── td3/
+    │   ├── reinforce/
+    │   ├── sac/
+    │   ├── ppo/
+    │   └── trpo/
+    │
+    └── plots/
+        ├── nfqi/
+        ├── dqn/
+        ├── double_dqn/
+        ├── ddpg/
+        ├── td3/
+        ├── reinforce/
+        ├── sac/
+        ├── ppo/
+        └── trpo/
+        
 
 # Reinforcement Learning : 
 
