@@ -30,7 +30,7 @@ To prove that the convergence to the fixed point is guaranteed it suffice to sho
 After applying the bellman operator we regress the model to the Bellman backups, also known a projection because it project the belman backup back in the set defined by the function approximation. This steps is essentially  defines another operator
 
 $$
-\Pi \leftarrow (\mathcal{T}\Pi)
+\Pi := (\mathcal{T}\Pi)
 $$
 
 One can akso show that $\Pi$ is also a contraction
@@ -41,7 +41,7 @@ $$
 Q_{k+1} \leftarrow \Pi (\mathcal{T}Q_k)
 $$
 
-Despite both operator being contractions, the combination of both is not a contraction because both operators are contraction under two different norms. 
+Despite both operator being contractions, the combination of both is not a contraction because both operators are contraction under two different norms. The Belman  operator being under max norm and the fitting oprator under L2 norm.
 Intuitively, applying the bellman operator makes us close to fixed point and applying fitting operator projects the bellman backup back to the set defined by function approximator, which is far from the fixed point. Thus, fitted iteration does not converge in general.
 
 
@@ -59,7 +59,7 @@ $$
 (3)\quad \phi \leftarrow \arg\min_\phi \sum_{i=1}^N \left( Q_\phi(s_i, a_i) - y_i \right)^2
 $$
 
-where (2) and (3) are repeated *k* times, both step represent respectively the Bellman operator and fitting.
+where (2) and (3) are repeated *k* times. Step (2) give us fixed bellman backups and step (3) minimizes the bellman error.
 
 
 ### CartPole 
@@ -90,7 +90,7 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 - [X] training lundar lander
 - [X] training mountain car
 - [X] training acrobot
-- [ ] testing module
+- [X] testing module
 - [ ] conclusions
 - [ ] plots
 - [ ] a more rigorous explanation
