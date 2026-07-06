@@ -36,12 +36,17 @@ The agent learns :
 * state-value function *v(s)* : the value of being in a state.
 * action-value function *q(s, a)*: the value of taking an action in a state.
 
+
+
 ## Policy-based:
 The agent parameterizes and optimizes directly the optimal policy.
+The 
 
 $$
 \pi(a \mid s)
 $$
+
+
 
 ## Model-based:
 The agent learns the model of the environment.
@@ -50,11 +55,26 @@ The agent learns the model of the environment.
 * Tabular:
 For lower-dimensional and discrete state/action space, value functions and the policy can be represented with a table(*which can be seen as a non-parametric function*).
 
-* function approximation:
+* Function approximation:
 For high-dimensional or continuous state/action space, the tabular representation becomes infeasible. One could discretize the space; a more modern approach is to leverage parametric functions through function approximation. 
 
-What makes function approximation attractive is *generalization*, which eliminates the need of infinitely visiting a state often, as stated in GLIE (Greedy in the Limit with Infinite Exploration). In similar states, the agent should behave in the same manner, but using function approximation comes with a cost: the convergence of the policy to a greedy policy may not hold anymore. 
+What makes function approximation attractive is *generalization*, which eliminates the need to infinitely visit a state often, as stated in GLIE (Greedy in the Limit with Infinite Exploration). In similar states, the agent should behave in the same manner, but using function approximation comes with a cost: the convergence of the policy to a greedy policy may not hold anymore. 
 
+
+Whether using tabular or function approximation, state value function or action value function can be expressed through a Bellman equation.
+$$
+\[
+V^{\pi}(s) = \sum_{a} \pi(a \mid s) \sum_{s'} P(s' \mid s, a)\left[r(s, a, s') + \gamma V^{\pi}(s')\right]
+\]
+$$
+
+The optimal policy is derived from a Bellman optimality equation.
+
+$$
+\[
+V^{*}(s) = \max_{a} \sum_{s'} P(s' \mid s, a)\left[r(s, a, s') + \gamma V^{*}(s')\right]
+\]
+$$
 
 # Scope of This Repository:
 This repo covers RL algorithms ranging from :
@@ -62,7 +82,7 @@ This repo covers RL algorithms ranging from :
 * function approximation.
 
 # Evironments: 
-All the environment used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
+All the environments used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
 
 
 # TODO 
