@@ -21,18 +21,12 @@ Where:
 
 # Objective 
 The agent's goal is to find an **optimal policy** which maximizes the *expected return* (cumulative discounted rewards). 
-
-<div align="center">
-
 $$
-\mathbb{E}\left[\sum_{t=0}^{H} \gamma^t r_t \right]
+\begin{align}
+
+\mathbb{E}\left[\sum_{t=0}^{H} \gamma^t r_t \right]\tag{1}
+\end{align}
 $$
-
-<div style="text-align:right; width:100%;">
-(1)
-</div>
-
-</div>
 
 # Core Method Families:
 To reach this goal, the agent can leverage three different approaches, a *value-based*, *policy-based* and *model based*:
