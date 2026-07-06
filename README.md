@@ -38,7 +38,10 @@ The agent learns :
 
 ## Policy-based:
 The agent parameterizes and optimizes directly the optimal policy.
-$\pi(a \mid s)$
+
+$
+\pi(a \mid s)
+$
 
 ## Model-based:
 The agent learns the model of the environment.
