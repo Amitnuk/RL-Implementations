@@ -20,12 +20,14 @@ All the environments used in this repo are part of [Gymnasium](https://gymnasium
 - [ ] [Double Q-Learning](https://arxiv.org/abs/1509.06461)
 - [ ] [Reinforce](https://proceedings.neurips.cc/paper_files/paper/1999/file/464d828b85b0bed98e80ade0a5c43b0f-Paper.pdf)
 - [ ] [SAC](https://arxiv.org/abs/1801.01290)
+- [ ] Repository structure
 - [ ] Tabular : SARSA, Q Learning, etc
 - [ ] And more
 
 
 # Repository Structure
 
+```text
 RL-Implementations/
 │
 ├── tabular/
@@ -34,7 +36,6 @@ RL-Implementations/
 │   └── sarsa/
 │
 ├── deep_rl/
-│
 │   ├── value_based/
 │   │   ├── nfqi/
 │   │   ├── dqn/
@@ -44,7 +45,6 @@ RL-Implementations/
 │   │   └── reinforce/
 │   │
 │   └── actor_critic/
-│       │
 │       ├── on_policy/
 │       │   ├── ppo/
 │       │   └── trpo/
@@ -83,6 +83,7 @@ RL-Implementations/
         ├── sac/
         ├── ppo/
         └── trpo/
+```
         
 
 # Reinforcement Learning : 
