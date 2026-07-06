@@ -115,7 +115,7 @@ def main() :
         run_launcher(args=args,Agent=Agent, lowest_evaluation_score=lowest_evaluation_score)
 
     if args.launch == MODES[0] :
-        CHECKPOINT_FILE = f"./results/nfqi/{args.env}/{args.env}_best.pt"
+        CHECKPOINT_FILE = f"./results/nfqi/{args.env}/{args.env}_best.pth"
         if os.path.isfile(CHECKPOINT_FILE) :
             checkpoint = torch.load(CHECKPOINT_FILE,weights_only=False)
             Agent.model.load_state_dict(checkpoint['model_state_dict'])
