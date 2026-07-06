@@ -23,7 +23,7 @@ Where:
 The agent's goal is to find an **optimal policy** which maximizes the *expected return* (cumulative discounted rewards). 
 
 $$
-\mathbb{E}\left[\sum_{t=0}^{H} \gamma^t r_t \right]\tag{1}
+\mathbb{E}\left[\sum_{t=0}^{H} \gamma^t r_t \right]
 $$
 
 
@@ -40,7 +40,7 @@ The agent learns :
 The agent parameterizes and optimizes directly the optimal policy.
 $\pi(a \mid s)$
 
-## Model-based
+## Model-based:
 The agent learns the model of the environment.
 
 # Representation of Value Functions and Policies:
