@@ -47,18 +47,18 @@ def parse_args() :
     parser.add_argument("--launch", type=str, choices=MODES, default=MODES[0], help="running mode, train or test, test is the default")
     parser.add_argument("--use_gpu",action="store_true",help="GPU usage, by the fault it is activated")
     parser.add_argument("--env",type=str,default="lunarlander", help="environment name,LunarLander is the the default environment")
-    parser.add_argument("--optimizer",default=0,type=int,choices=[0,1,2],help="The optimizer to select, 0 for Adam, 1 for RMSProp and 2 for SGD, Adam is default")
     parser.add_argument("--max_episodes",default=1,type=int,help="Max episodes, default value is one")
     parser.add_argument("--buffer_size",default=10000,type=int,help="replay buffer size")
-    parser.add_argument("--seed", default=34,type=int, help="seeding, the default value is 34")
-    parser.add_argument("--behaviour_policy",default="egreedy",type=str,choices=BEHAVIOUR_POLICY_CHOICES,help="policy choices, egreedy is the default ")
-    parser.add_argument("--epsilon",default=0.1,type=float, help="epsilon value for exploration")
     parser.add_argument("--gamma",default=0.99,type=float, help="discount value, default is 0.99")
+    parser.add_argument("--behaviour_policy",default="egreedy",type=str,choices=BEHAVIOUR_POLICY_CHOICES,help="policy choices, egreedy is the default ")
     parser.add_argument("--batch_size",default=100,type=int, help="the size of the batch, default size is 100")
     parser.add_argument("--epochs",default=40,type=int, help="number of epochs, default is 40")
+    parser.add_argument("--optimizer",default=0,type=int,choices=[0,1,2],help="The optimizer to select, 0 for Adam, 1 for RMSProp and 2 for SGD, Adam is default")
     parser.add_argument("--lr",default=0.003,type=float, help="learning rate, default is 0.003")
-    parser.add_argument("--decay_ratio", default=1.0, type=float, help="decay ratio for when epsilon when epsilon greedy is selected, default is one")
+    parser.add_argument("--epsilon",default=0.1,type=float, help="epsilon value for exploration")
     parser.add_argument("--final_epsilon", default=0.1, type=float, help="the lower epsilon can get for when epsilon when epsilon greedy is selected, default is one")
+    parser.add_argument("--decay_ratio", default=1.0, type=float, help="decay ratio for when epsilon when epsilon greedy is selected, default is one")
+    parser.add_argument("--seed", default=34,type=int, help="seeding, the default value is 34")
 
     
     return parser.parse_args()
@@ -86,7 +86,7 @@ def main() :
     elif args.env == "acrobot" :
         hidden_units = (256,256) 
     else :
-        hidden_units = (32,16) 
+        hidden_units = (4,4) 
 
     if args.launch != MODES[1] and args.launch != MODES[0] :
         print("must choose the launcing mode, train or eval")
@@ -122,8 +122,8 @@ def main() :
         print("Evaluation Mode")
         
         
-        #Agent.evaluate(args.max_episodes)
-        Agent.create_gif()
+        Agent.evaluate(args.max_episodes)
+        #Agent.create_gif()
 
         
     

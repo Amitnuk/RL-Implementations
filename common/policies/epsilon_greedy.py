@@ -9,7 +9,8 @@ class EpsilonGreedyStrategy :
         self.decay_ratio = 0.7
         self.initial_epsilon=1.0
         self.final_epsilon=final_epsilon
-        self.decay_episodes = None     
+        self.decay_episodes = None  
+        self.step = 0   
         
     def set_initial_epsilon(self,initial_epsilon:float=1.0) :
         self.initial_epsilon = initial_epsilon
@@ -52,6 +53,9 @@ class EpsilonGreedyStrategy :
         if not isinstance(action ,int) :
             action = action.item()
 
+        if self.step % 50 == 0 :
+            print(f"action selected:{action}\n{q_values}")
+        self.step += 1
         return action
     
 

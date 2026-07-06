@@ -142,7 +142,7 @@ class Trainer :
             self.writer.add_scalar("Eval/AverageReward100",np.mean(self.episode_reward_eval[-100:]),episode)
             self.writer.add_scalar("Eval/AverageReward1000",np.mean(self.episode_reward_eval[-1000:]),episode)
 
-            if self.best_agent_score <= evaluation_score  :
+            if self.best_agent_score <= evaluation_score  and evaluation_score > -200 :
                 checkpoint = {
                                 "model":Agent.model,
                                 "model_state_dict":Agent.model.state_dict(),
@@ -155,7 +155,7 @@ class Trainer :
                 
                 self.best_agent_score = evaluation_score
                 evaluation_best_score = evaluation_score
-                CHECKPOINT_FILE = f"results/fqn/{ENV}/{ENV}_episode_nb_{episode}.pth"
+                CHECKPOINT_FILE = f"results/nfqi/{ENV}/{ENV}_episode_nb_{episode}.pth"
                 CHECKPOINT_DIR = os.path.join("./", CHECKPOINT_FILE)
                 torch.save(checkpoint,CHECKPOINT_DIR)
                 print("SAVING MODEL")

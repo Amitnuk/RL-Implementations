@@ -91,7 +91,7 @@ class NFQIAgent :
        
      
         if self.mode == "eval" :
-            self.Env = gym.make(id=self.env_name, render_mode="rgb_array")
+            self.Env = gym.make(id=self.env_name, render_mode="human")
             
         
         if self.mode == "train" :
