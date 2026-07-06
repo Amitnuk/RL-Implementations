@@ -31,7 +31,7 @@ As for the development frameworwork, I use PyTorch and tensorboard to experiment
 - [ ] And more
 
 
-# Repository Structure
+# Repository Structure(Future)
 
 ```text
 RL-Implementations/
