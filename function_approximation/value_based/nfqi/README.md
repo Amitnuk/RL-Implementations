@@ -36,8 +36,9 @@ $$
 One can akso show that $\Pi$ is also a contraction
 ### Fitted value iteration algorithm 
 combining the both opoerator we get :
+
 $$
-Q \leftarrow (\mathcal{T}\Pi) (\mathcal{T}Q)
+Q_{k+1} \leftarrow Pi (\mathcal{T}Q_k)
 $$
 
 Despite both operator being contractions, the combination of both is not a contraction because both operators are contraction under two different norms. 
