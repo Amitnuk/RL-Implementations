@@ -64,7 +64,7 @@ What makes function approximation attractive is *generalization*, which eliminat
 Whether using tabular or function approximation, state value function or action value function can be expressed through a Bellman equation.
 
 $$
-V^{\pi}(s) = \sum_{a} \pi(a \mid s) \sum_{s'} 
+V^{\pi}(s) = \sum_{a} \pi(a \mid s) \sum_{s'} P(s' \mid s, a) 
 $$
 
 
