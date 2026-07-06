@@ -62,15 +62,18 @@ What makes function approximation attractive is *generalization*, which eliminat
 
 
 Whether using tabular or function approximation, state value function or action value function can be expressed through a Bellman equation.
-$$
+
+\[
 V^{\pi}(s) = \sum_{a} \pi(a \mid s) \sum_{s'} P(s' \mid s, a)\left[r(s, a, s') + \gamma V^{\pi}(s')\right]
-$$
+\]
+
 
 The optimal policy is derived from a Bellman optimality equation.
 
-$$
+
+\[
 V^{*}(s) = \max_{a} \sum_{s'} P(s' \mid s, a)\left[r(s, a, s') + \gamma V^{*}(s')\right]
-$$
+\]
 
 
 # Scope of This Repository:
