@@ -16,12 +16,17 @@ Function approximator, a part of the deadly triad in *RL*, alleviate the conditi
 
 ## Algorithm 
 $$
-(1)\;& \text{Collect dataset } \mathcal{D} = \{(s_i, a_i, s'_i, r_i)\} \\
-\\
-(2)\;& y_i \leftarrow r_i + \gamma \max_{a'} Q_\phi(s'_i, a') \\
-\\
-(3)\;& \phi \leftarrow \arg\min_\phi \sum_i \left( Q_\phi(s_i, a_i) - y_i \right)^2
+(1)\quad \mathcal{D} = \{(s_i, a_i, s'_i, r_i)\}_{i=1}^N
 $$
+
+$$
+(2)\quad y_i = r_i + \gamma \max_{a'} Q_\phi(s'_i, a')
+$$
+
+$$
+(3)\quad \phi \leftarrow \arg\min_\phi \sum_{i=1}^N \left( Q_\phi(s_i, a_i) - y_i \right)^2
+$$
+
 a bellman  operator + poroject, equation and all, this just a placehoder for you
 
 
