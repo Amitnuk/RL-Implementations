@@ -6,11 +6,11 @@ Grammatical mistakes, inconsistencies, and informal explanations are to be expec
 
 As Richard P. Feynman once said, *"What I cannot create, I do not understand."* This repository reflects that philosophy through the implementation of reinforcement learning algorithms from scratch. Beyond studying the theory, the goal is to develop a deeper understanding of the underlying concepts by translating them into working code, while identifying and correcting gaps in my own understanding along the way.
 
-For that, this repository covers RL algorithms ranging from :
-* tabular representation.
-* function approximation.
+This repository covers RL algorithms ranging from :
+* *Tabular representation.*
+* *Function approximation.*
 
-# Evironments: 
+# Environments: 
 All the environments used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
 
 
@@ -30,9 +30,9 @@ All the environments used in this repo are part of [Gymnasium](https://gymnasium
 **Reinforcement Learning**, a *Machine Learning* paradigm where an agent learns to make sequential decisions through trial and error within a given environment. 
 
 # Objective 
-The **Reinforcement Learning** goal is to find an **optimal policy**. A *policy* can be thought intuitively as brain of the agent, where for a given state, the policy ouputs the the action that better helps the agents reach its own goal. The agent goal is to maximize the long term reward.
+The **Reinforcement Learning** goal is to find an **optimal policy**. A *policy* can be thought intuitively as the brain of the agent, where, for a given state, the policy ouputs the the action that better helps the agents reach its own goal. The agent goal is to maximize the long term reward.
 
-Broadly, RL methods can be categorized into:
+Broadly, *RL* methods can be categorized into:
 * *Value-based methods*
 * *Policy-based methods*
 * *Model-based methods*
