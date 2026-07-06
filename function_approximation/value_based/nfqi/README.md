@@ -58,7 +58,7 @@ $$
 (3)\quad \phi \leftarrow \arg\min_\phi \sum_{i=1}^N \left( Q_\phi(s_i, a_i) - y_i \right)^2
 $$
 
-where (2) and (3) are repeated *k*, both step represent respectively the Bellman operator and fitting.
+where (2) and (3) are repeated *k* times, both step represent respectively the Bellman operator and fitting.
 
 
 ### CartPole 
