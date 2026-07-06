@@ -22,10 +22,7 @@ Where:
 # Objective 
 The agent's goal is to find an **optimal policy** which maximizes the *expected return* (cumulative discounted rewards). 
 $
-\begin{equation}
-
 \mathbb{E}\left[\sum_{t=0}^{H} \gamma^t r_t \right]\tag{1}
-\end{equation}
 $
 
 # Core Method Families:
