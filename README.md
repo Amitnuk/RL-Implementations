@@ -54,12 +54,12 @@ For high-dimensional or continuous state/action space, the tabular representatio
 What makes function approximation attractive is *generalization*, which eliminates the need of infinitely visiting a state often, as stated in GLIE (Greedy in the Limit with Infinite Exploration). In similar states, the agent should behave in the same manner, but using function approximation comes with a cost: the convergence of the policy to a greedy policy may not hold anymore. 
 
 
-# Scope of This Repository
+# Scope of This Repository:
 This repo covers RL algorithms ranging from :
 * tabular representation
 * function approximation.
 
-# Evironment 
+# Evironments: 
 All the environment used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
 
 

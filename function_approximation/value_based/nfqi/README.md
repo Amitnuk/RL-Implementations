@@ -92,7 +92,5 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 
 
 
-NFQ did not converge on MountainCar-v0 due to insufficient exploration of high-velocity states. The replay distribution failed to include successful or near-success trajectories, preventing value propagation through the Bellman backup. The learned Q-function therefore converged on a locally consistent but suboptimal policy restricted to the initial basin of attraction
-
 
 
