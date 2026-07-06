@@ -10,8 +10,9 @@ This repository covers RL algorithms ranging from :
 * *Tabular representation.*
 * *Function approximation.*
 
-# Environments: 
+# Environments and Development Framework: 
 All the environments used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
+As for the development frameworwork, I use PyTorch and tensorboard to experiment tracking.
 
 
 # TODO 
@@ -19,9 +20,14 @@ All the environments used in this repo are part of [Gymnasium](https://gymnasium
 - [ ] [DQN](https://arxiv.org/abs/1312.5602)
 - [ ] [Double Q-Learning](https://arxiv.org/abs/1509.06461)
 - [ ] [Reinforce](https://proceedings.neurips.cc/paper_files/paper/1999/file/464d828b85b0bed98e80ade0a5c43b0f-Paper.pdf)
+- [ ] [DDPG](https://arxiv.org/pdf/1509.02971)
+- [ ] [TD3](https://arxiv.org/abs/1802.09477)
 - [ ] [SAC](https://arxiv.org/abs/1801.01290)
-- [ ] Repository structure
-- [ ] Tabular : SARSA, Q Learning, etc
+- [ ] [TRPO](https://arxiv.org/abs/1502.05477)
+- [ ] [PPO](https://arxiv.org/abs/1707.06347)
+- [ ] SARSA, Q Learning, etc
+- [X] Repository structure
+- [ ] Requirements to reproduce this repo results
 - [ ] And more
 
 
