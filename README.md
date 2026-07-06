@@ -61,7 +61,7 @@ This repo covers RL algorithms ranging from :
 
 
 # TODO 
-- [X] [Fitted Neural Q Iteration](https://github.com/Amitnuk/RL-Implementations/tree/main/function_approximation/value_based/fqn)
+- [X] [Fitted Neural Q Iteration](https://github.com/Amitnuk/RL-Implementations/tree/main/function_approximation/value_based/nfqi)
 - [ ] [DQN](https://arxiv.org/abs/1312.5602)
 - [ ] [Double Q-Learning](https://arxiv.org/abs/1509.06461)
 - [ ] [Reinforce](https://proceedings.neurips.cc/paper_files/paper/1999/file/464d828b85b0bed98e80ade0a5c43b0f-Paper.pdf)
