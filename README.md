@@ -11,7 +11,7 @@ This repository covers RL algorithms ranging from :
 * *Function approximation.*
 
 # Environments: 
-All the environments used in this repo are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
+All the environments used in this repository are part of [Gymnasium](https://gymnasium.farama.org/index.html)  
 
 #### Background 
 As with most (if not all) [Gymnasium](https://gymnasium.farama.org) environments are assumed to be an [MDPs](https://en.wikipedia.org/wiki/Markov_decision_process) which is remains unknown to the agent. As consequence, it requires the agent to interact with the environment to samples transitions through agent–environment interaction. 
