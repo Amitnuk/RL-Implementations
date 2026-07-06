@@ -21,7 +21,7 @@ The agent starts by receiving an initial observation, it must select an action, 
 ### Lunar Lander 
 The Lunar Lander environment simulates the landing a small rocket on the moon surface, the rocket has 3 engines. 
 
-In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) the observation space is an 8-dimensional continuous vector, representing landing position x,y, the velocity in each axis, the angle and two boolean representing the contact of each leg with the ground.
+In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) the observation space is an 8-dimensional continuous vector, representing landing position x,y, the velocity in each axis, the angle, the angle velocity and two boolean representing the contact of each leg with the ground.
 
 The action space is reresented with 4 discrete action ranging for 0 to 3 :
 
