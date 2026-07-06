@@ -40,6 +40,9 @@ The action space is reresented with 2 discrete action ranging for 0 to 1 :
 * 0: Push cart to the left
 * 1: Push cart to the right
 
+### Many more to come. 
+Car racing, balckjack, cliff walking, half cheetah, pusher, ant humanoid standup and others...
+
 # TODO 
 - [X] [Neural Fitted Q Iteration](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/nfqi)
 - [ ] [DQN](https://arxiv.org/abs/1312.5602)
