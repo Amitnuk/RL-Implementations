@@ -101,16 +101,18 @@ In [Lunar Lander](https://gymnasium.farama.org/environments/box2d/lunar_lander) 
 # Notes
 
 # Results
-## Cartpole graphs 
+## Graphs
+### Cartpole  
 
 | Image 1 | Image 2 |
 |----------|----------|
 | ![Moving Average Reward(Eval)](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/cartpoleaveragereward1000.png) | ![Total Average Reward](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/cartpolereward.png) |
 
-## Lunar lander graphs 
+### Lunar lander  
 
 
-## Figures
+## Figures 
+### Lunar lander
 ![Lunar Lander](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/lunarlander.gif)
 
 
