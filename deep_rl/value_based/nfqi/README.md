@@ -94,6 +94,9 @@ where (2) and (3) are repeated *k* times. Step (2) give us fixed bellman backups
 
 ### Lunar lander  
 
+| Moving Average Reward(Eval) | Total Average Reward(Eval) |
+|----------|----------|
+| ![Moving Average Reward(Eval)](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/lunarlanderaveragereward1000.png) | ![Total Average Reward](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/lunarlanderreward.png) |
 
 ## Figures 
 ### Lunar lander
