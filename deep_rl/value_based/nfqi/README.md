@@ -75,10 +75,9 @@ where (2) and (3) are repeated *k* times. Step (2) give us fixed bellman backups
 - [X] training mountain car
 - [X] training acrobot
 - [X] testing module
-- [ ] conclusions
-- [ ] plots
-- [ ] a more rigorous explanation
-- [ ] And more
+- [X] plots
+- [X] a more rigorous explanation
+- [ ] grammar correction and some other minor details
 
 
 
@@ -92,13 +91,23 @@ where (2) and (3) are repeated *k* times. Step (2) give us fixed bellman backups
 |----------|----------|
 | ![Moving Average Reward(Eval)](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/cartpoleaveragereward1000.png) | ![Total Average Reward](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/cartpolereward.png) |
 
+The graphics above showcase the total reward and the average reward using 1000 last collected reward in evaluation, as we can see the agent learns to maintain the pole upright. The Q-value is model by MLP with two hidden layers with 512 and 128 neurons respectivelly, with a batch size of 1024 and discount factor 1. The activation function is a ReLU and optimizer is RMSProp with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a decaying epsilon that starts from 1.0 and stops at 0.5. The result of the agent managing to maintain the pole uprigth can be seen in gifs in the animation subsection.
+
+
 ### Lunar lander  
 
 | Moving Average Reward(Eval) | Total Average Reward(Eval) |
 |----------|----------|
 | ![Moving Average Reward(Eval)](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/lunarlanderaveragereward1000.png) | ![Total Average Reward](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/lunarlanderreward.png) |
 
-## Figures 
+
+The graphics above showcase the total reward and the average reward using 1000 last collected reward in evaluation, as we can see the agent learns to land the rocket. The Q-value is model by MLP with two hidden layers with 256 and 256 neurons respectivelly, with a batch size of 1024 and discount factor 0.99. The activation function is a ReLU and optimizer is RMSProp with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a decaying epsilon that starts from 1.0 and stops at 0.1. The result of the agent managing to maintain the pole uprigth can be seen in gifs in the animation subsection.
+
+
+### Mountain Car
+throughout the training, the reward remained at -200, indicating the agent did not learn the policy to escape the valley.
+
+## Animation 
 ### Lunar lander
 ![Cartpole](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/cartpole.gif)
 
@@ -106,6 +115,20 @@ where (2) and (3) are repeated *k* times. Step (2) give us fixed bellman backups
 ### Lunar lander
 ![Lunar Lander](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/lunarlander.gif)
 
+
+
+# Summary 
+
+NFQI is far from a state of the art, but in simple environments liek lunarlander and cartopole, it shows a good performance as we can see on the grapths above, but in environment like mountaincar where the reward is uninformatively dense, an environment that does not provide directional information to guide the agent, NFQI, struggled. A solution I found to solve mountain car involved reward shapping based on the position to the goal, which i decided not to do.
+
+Overall, we showed that NFQI algotihm converges to a good policy, but it has two glaring issues. First, the fact we have moving target, in each update, we have a different the Bellman backup. Thus, in each update the agent solves a different regression problem. Second, the algorithm, as stated in the paper, is not sample efficient, the data collect is thown away before each update and a knew one must be collected. Both problem are tackled in [DQN](https://arxiv.org/abs/1312.5602), an algorithm that I also implement in this repository.
+
+
+
+# Reference 
+
+[CS 285 : Deep RL, 2023](https://www.youtube.com/playlist?list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps)
+[Sutton, R.S., Bach, F., and Barto, A.G., 2018. Reinforcement learning: An introduction. Massachusetts: MIT Press Ltd.](https://www.andrew.cmu.edu/course/10-703/textbook/BartoSutton.pdf)
 
 
 
