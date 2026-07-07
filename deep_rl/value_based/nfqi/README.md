@@ -3,8 +3,9 @@ This repository is under active development. Some sections contain high-level in
 Grammatical mistakes, inconsistencies, and informal explanations are to be expected.
 
 # Goal 
-Solving CartPole, Lunar Lander, and Mountain Car Using [Neural Fitted Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32) 
-These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.html), a quick overview can be found at [1](https://github.com/Amitnuk/RL-Implementations/tree/main)
+Solving CartPole, Lunar Lander, and Mountain Car Using [Neural Fitted Q-iteration](https://link.springer.com/chapter/10.1007/11564096_32).
+
+These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.html), a quick overview can be found at [[1](https://github.com/Amitnuk/RL-Implementations/tree/main)]
 
 # Neural Fitted Q-iteration
 
