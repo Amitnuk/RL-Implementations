@@ -78,6 +78,7 @@ where (2) and (3) are repeated *k* times. Step (2) give us fixed bellman backups
 - [X] testing module
 - [X] plots
 - [X] a more rigorous explanation
+- [ ] requirement and a usage section
 - [ ] grammar correction and some other minor details
 
 
