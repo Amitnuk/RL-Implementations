@@ -110,7 +110,7 @@ The graphics above showcase the total reward and the average reward using 1000 l
 Throughout the training, the reward remained at -200, indicating the agent did not learn the policy to escape the valley.
 
 ## Animation 
-### Lunar lander
+### Cartpole
 ![Cartpole](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/cartpole.gif)
 
 
@@ -123,7 +123,7 @@ Throughout the training, the reward remained at -200, indicating the agent did n
 
 NFQI is far from a state of the art, but in simple environment like lunarlander and cartopole, it shows a good performance as we can see on the grapths above, but in environment like mountaincar where the reward is uninformatively dense, an environment that does not provide directional information to guide the agent, NFQI, struggled. A solution I found to solve mountain car involved reward shapping based on the position to the goal.
 
-Overall, we showed that NFQI algorithm converges not to optimal policy but good enough policy, but it has two glaring issues. First, the fact we have moving target, in each update, effectively we have a different the Bellman backup. Thus, in each update the agent solves a different regression problem. Second, the algorithm, as stated in the paper, is not sample efficient, the data collected is thown away before each update and a new one must be collected. Both problems are tackled in [DQN](https://arxiv.org/abs/1312.5602), an algorithm that I also implement in this repository.
+Overall, we showed that NFQI algorithm converges not to optimal policy but good enough policy, but it has two glaring issues. First, the fact we have moving target, in each update, effectively we have a different the Bellman backup. Thus, in each update the agent solves a different regression problem. Second, the algorithm, as stated in the paper, is not sample efficient, the data collected is thown away after each update and a new one must be collected before the next update. Both problems are tackled in [DQN](https://arxiv.org/abs/1312.5602), an algorithm that I also implement in this repository.
 
 
 
