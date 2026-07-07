@@ -40,7 +40,7 @@ One can akso show that $\Pi$ is also a contraction
 combining the both opoerator we get :
 
 $$
-Q \leftarrow \Pi (\mathcal{T}Q) = \arg\min_ Q^' 
+Q \leftarrow \Pi (\mathcal{T}Q)
 $$
 
 Despite both operator being contractions, the combination of both is not a contraction because both operators are contraction under two different norms. The Belman  operator being under max norm and the projection operator under L2 norm.
