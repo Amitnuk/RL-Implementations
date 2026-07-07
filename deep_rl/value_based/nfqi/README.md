@@ -40,10 +40,10 @@ One can akso show that $\Pi$ is also a contraction
 combining the both opoerator we get :
 
 $$
-Q_{k+1} \leftarrow \Pi (\mathcal{T}Q_k)
+Q \leftarrow \Pi (\mathcal{T}Q)
 $$
 
-Despite both operator being contractions, the combination of both is not a contraction because both operators are contraction under two different norms. The Belman  operator being under max norm and the fitting oprator under L2 norm.
+Despite both operator being contractions, the combination of both is not a contraction because both operators are contraction under two different norms. The Belman  operator being under max norm and the projection operator under L2 norm.
 Intuitively, applying the bellman operator makes us close to fixed point and applying fitting operator projects the bellman backup back to the set defined by function approximator, which is far from the fixed point. Thus, fitted iteration does not converge in general.
 
 
@@ -123,7 +123,7 @@ Throughout the training, the reward remained at -200, indicating the agent did n
 
 NFQI is far from a state of the art, but in simple environment like lunarlander and cartopole, it shows a good performance as we can see on the grapths above, but in environment like mountaincar where the reward is uninformatively dense, an environment that does not provide directional information to guide the agent, NFQI, struggled. A solution I found to solve mountain car involved reward shapping based on the position to the goal.
 
-Overall, we showed that NFQI algorithm converges not to optimal policy but good enough policy, but it has two glaring issues. First, the fact we have moving target, in each update, effectively we have a different the Bellman backup. Thus, in each update the agent solves a different regression problem. Second, the algorithm, as stated in the paper, is not sample efficient, the data collected is thown away after each update and a new one must be collected before the next update. Both problems are tackled in [DQN](https://arxiv.org/abs/1312.5602), an algorithm that I also implement in this repository.
+Overall, we showed that NFQI algorithm converges not to optimal policy but good enough policy, but it has three glaring issues. First, the fact we have moving target, in each update, effectively we have a different the Bellman backup. Thus, in each update the agent solves a different regression problem. Second, the algorithm, as stated in the paper, is not sample efficient, the data collected is thown away after each update and a new one must be collected before the next update. Third, the algorithms breaks one of the assumption made stochastic approximation, that the data must be [IID](https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables) but how the transitions we collect are heavely correlated. All three problems are tackled in [DQN](https://arxiv.org/abs/1312.5602), an algorithm that I also implement in this repository.
 
 
 
