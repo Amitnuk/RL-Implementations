@@ -32,7 +32,7 @@ To prove that the convergence to the fixed point is guaranteed it suffice to sho
 After applying the bellman operator we regress the model to the Bellman backups, also known a projection because it project the belman backup back in the set defined by the function approximation. This steps is essentially  defines another operator
 
 $$
-\Pi := (\mathcal{\Pi}\Q) = \arg\min_ Q^' 1/2\sum_{i=1}^N \left( Q^' - Q)^2
+\Pi := (\mathcal{\Pi}\Q) = \arg\min_ Q^' 1/2\sum_{i=1}^N \left( Q^' - Q\right)^2
 $$
 
 One can akso show that $\Pi$ is also a contraction
