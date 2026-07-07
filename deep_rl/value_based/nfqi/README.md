@@ -125,7 +125,7 @@ Overall, we showed that NFQI algorithm converges not to optimal policy but good 
 
 
 
-# Reference 
+# References
 
 [CS 285 : Deep RL, 2023](https://www.youtube.com/playlist?list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps).
 
