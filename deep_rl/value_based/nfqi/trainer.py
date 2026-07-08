@@ -138,7 +138,7 @@ class Trainer :
             self.writer.add_scalar("Eval/AverageReward1000",np.mean(self.episode_reward_eval[-1000:]),episode)
 
             if self.best_agent_score <= evaluation_score  and evaluation_score > self.lowest_evaluation_score and 0:
-                continue
+                
                 checkpoint = {
                                 "model":Agent.model,
                                 "model_state_dict":Agent.model.state_dict(),

@@ -62,7 +62,7 @@ class DQNAgent :
         self.nS, self.nA = self.observation_dim, self.action_dim
         print(f"number of states S = {self.nS}\nnumber of actions A = {self.nA}")
         print(f"Single State = {self.Env.observation_space.sample()}\nSingle Action = {self.Env.action_space.sample()}")
-        
+       
         self.cummulative_reward_per_episdode = 0
 
         
@@ -195,7 +195,7 @@ class DQNAgent :
                     break
 
         print("num frames:", len(images))
-        FileToSave = f"./experiments/figures/{self.env_name[:-3].lower()}.gif"
+        FileToSave = f"./experiments/figures/dqn_{self.env_name[:-3].lower()}.gif"
        
         with imageio.get_writer(FileToSave, mode="I",fps=30,loop=0 ) as writer:
              for img in images:

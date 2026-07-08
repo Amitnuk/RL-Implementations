@@ -86,7 +86,7 @@ class Trainer :
                     
                     EVAL_MODE = True
                     
-                if np.sum(Agent.episode_timestep) % 7000 == 0 :
+                if np.sum(Agent.episode_timestep) % 50 == 0 :
                     #print("UPGRADE", np.sum(Agent.episode_timestep) )
                     Agent.update_target_network()
                     total_step_in_episode = False
@@ -153,7 +153,7 @@ class Trainer :
                 
                 self.best_agent_score = evaluation_score
                 evaluation_best_score = evaluation_score
-                CHECKPOINT_FILE = f"results/dqn/{ENV}/{ENV}_episode_nb_{episode}.pt"
+                CHECKPOINT_FILE = f"results/dqn/{ENV}/{ENV}_best.pth"
                 CHECKPOINT_DIR = os.path.join("./", CHECKPOINT_FILE)
                 torch.save(checkpoint,CHECKPOINT_DIR)
                 print("SAVING MODEL")

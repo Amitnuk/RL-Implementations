@@ -12,7 +12,8 @@ import os
 ENVIRONMENTS = {"cartpole":"CartPole-v1",
                 "lunarlander":"LunarLander-v3",
                 "mountaincar":"MountainCar-v0",
-                "acrobot":"Acrobot-v1"}
+                "acrobot":"Acrobot-v1",
+                "cliffwalking":"CliffWalking-v0"}
 
 BEHAVIOUR_POLICY_CHOICES = ["greedy", "egreedy", "egreedylineardecay", "egreedyexpdecay","softmax", "gaussian"]
 MODES = ["eval", "train"]
@@ -23,17 +24,17 @@ def run_launcher(args,Agent:DQNAgent,lowest_evaluation_score:int) :
     
 def select_policies(args) :
 
-    scaleup = 5
+    max_steps = 90000
     if args.behaviour_policy == "greedy" :
         return GreedyStrategy()
     elif args.behaviour_policy == "egreedy" :
         return EpsilonGreedyStrategy(epsilon=args.epsilon)
     elif args.behaviour_policy == "egreedylineardecay" :
-        return EGreedyLinearDecayStrategy(max_steps=args.max_episodes*scaleup,initial_epsilon=args.epsilon,final_epsilon=args.final_epsilon,decay_ratio=args.decay_ratio)
+        return EGreedyLinearDecayStrategy(max_steps=max_steps,initial_epsilon=args.epsilon,final_epsilon=args.final_epsilon,decay_ratio=args.decay_ratio)
     elif args.behaviour_policy == "egreedyexpdecay" :
-        return EGreedyExponentialDecayStrategy(max_steps=args.max_episodes*scaleup,initial_epsilon=args.epsilon,final_epsilon=args.final_epsilon,decay_ratio=args.decay_ratio)
+        return EGreedyExponentialDecayStrategy(max_steps=max_steps,initial_epsilon=args.epsilon,final_epsilon=args.final_epsilon,decay_ratio=args.decay_ratio)
     elif args.behaviour_policy == "softmax" :
-        return SoftMaxStrategy(init_temperature=args.init_temperature, min_temperature=args.init_temperature, exploration_ratio=args.exploration_ratio,  max_steps=args.max_episodes*scaleup)
+        return SoftMaxStrategy(init_temperature=args.init_temperature, min_temperature=args.init_temperature, exploration_ratio=args.exploration_ratio,  max_steps=max_steps)
     else :
         print(f"{args.behaviour_policy} is not yet implemented, so epsilon greedy will be selected instead")
         return EpsilonGreedyStrategy(epsilon=args.epsilon)

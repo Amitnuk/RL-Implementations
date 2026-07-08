@@ -17,14 +17,15 @@ These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.htm
 ## Testing
 
 # TODO
-- [ ] train module
-- [ ] training cartpole 
-- [ ] training lundar lander
-- [ ] training mountain car
-- [ ] training acrobot
+
+- [X] train module
+- [X] training cartpole 
+- [X] training lundar lander
+- [X] training mountain car
+- [X] training acrobot
 - [ ] testing module
 - [ ] plots
-- [ ] a more rigorous explanation
+- [ ] a rigorous explanation
 - [ ] requirement and a usage section
 - [ ] grammar correction and some other minor details
 
