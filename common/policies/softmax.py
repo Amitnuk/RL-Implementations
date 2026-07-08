@@ -5,37 +5,41 @@ import numpy as np
 
 class SoftMaxStrategy :
 
-    def __init__(self, temperature:float=1.0) :
-        self.base= temperature * 2.5
+    def __init__(self, init_temperature:float=1.0, min_temperature:float=0.3, exploration_ratio=0.8,  max_steps=25000) :
+
+        self.init_temperature= init_temperature 
+        self.min_temperature= min_temperature
+        self.exploration_ratio= exploration_ratio
+        self.max_steps= max_steps
         self.min = 0.1
         self.scale = 0.9999
         self.step = 0
-        self.warmup_steps = 15000000
+        
+
+    def decay_temperature(self) :
+
+        temp = 1 -self.step/(self.exploration_ratio*self.max_steps)
+        temp = (self.init_temperature - self.min_temperature)*temp + self.min_temperature 
+        temp = np.clip(temp, self.min_temperature, self.init_temperature)
+        self.step += 1
+
+        return temp
 
     def select_discret_action(self, model:nn.Module, state:torch.Tensor) :
         
-        self.step += 1
+        
+        self.temperature = self.decay_temperature()
 
-        if self.step < self.warmup_steps :
-            self.temperature = self.base
-        else :
-            self.temperature = max(self.min, self.base*self.scale**(self.step  - self.warmup_steps))
+        with torch.inference_mode() :
+            q_values = model(state).detach().cpu().data.numpy().squeeze()
 
+            scaled_q_values = q_values/self.temperature 
+            norm_q_values = q_values - q_values.max()
+            e = np.exp(q_values)
+            probs = e/(np.sum(e)+ 1e-12)
+            assert np.isclose(probs.sum(), 1.0)
 
-        q_values = model(state).detach().cpu().data.numpy().squeeze()
-
-        q_values = q_values - q_values.max()
-        q_values = q_values/self.temperature 
-
-        exp_q = np.exp(q_values)
-        probs = exp_q/(exp_q.sum() + 1e-12)
-
-        probs = 0.9 * probs + 0.1 / q_values.shape[0]
-        probs = probs/sum(probs)
-        if self.step % 50 == 0 :
-            print(f"action selected: {np.random.choice(q_values.shape[0], p=probs)}\nprobs: {probs}\nq: {q_values}")
-
-
+        
         return np.random.choice(q_values.shape[0], p=probs)
         
         

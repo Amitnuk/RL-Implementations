@@ -22,24 +22,22 @@ class Trainer :
     def train(self,
               Agent:NFQIAgent,
               nb_episodes:int,
-              ENV:str,
-              DECAY_RATIO:float,
-              NB:int=0) :
+              ENV:str) :
 
         self.episode_reward = [] 
         self.episode_reward_eval = []
         self.best_agent_score = -1000 
         total_step = 0
         evaluation_score = 0
-        evaluation_best_score = 0
+        evaluation_best_score = self.lowest_evaluation_score
         
         TENSORBOARD_PATH = f"runs/nfqi/{Agent.env_name[:-3].lower()}"
         behavior_policy = Agent.training_strategy_fn
-        decay_eps = False
+        egreedy_like_p = False
 
-        if hasattr(behavior_policy, "epsilon") and DECAY_RATIO < 1.0 :
-            behavior_policy.set_decay_episodes_and_decay_ratio(nb_episodes, DECAY_RATIO)
-            decay_eps = True
+        if hasattr(behavior_policy, "epsilon") :
+            print(behavior_policy.epsilon)
+            egreedy_like_p = True
 
 
         if not os.path.exists(TENSORBOARD_PATH) :
@@ -58,7 +56,7 @@ class Trainer :
                          "min_gap": 0,
                          "max_gap": 0}
         
-        epsilon = 0
+
         train_step = 0
         for episode in range(1, nb_episodes + 1) :
             
@@ -66,9 +64,7 @@ class Trainer :
             self.episode_reward.append(0.0)   
             self.episode_reward_eval.append(0.0)
             state, _ = Agent.Env.reset(seed=Agent.seed + episode -1)
-            if decay_eps :
-                epsilon = behavior_policy.decay(episode)
-                behavior_policy.set_epsilon(epsilon)
+
             
             print("TRAIN")
             for step in count() :
@@ -88,7 +84,7 @@ class Trainer :
                     debug_results = self.fqi_debug_step(Agent, experiences[0])
                    
                     self.writer.add_scalar("Train/Loss",loss, train_step)
-                    if decay_eps :
+                    if egreedy_like_p :
                         self.writer.add_scalar("Train/Epsilon",behavior_policy.epsilon, episode)
                     train_step += 1
                     Agent.clear()
@@ -127,8 +123,8 @@ class Trainer :
             debug_message +=f"\nevaluation score for last 100 episodes : {np.mean(self.episode_reward_eval[-100:]):.2f}"
             debug_message +=f"\nevaluation score for last 1000 episodes : {np.mean(self.episode_reward_eval[-100:]):.2f}"
 
-            if decay_eps :
-                debug_message +=f"\nepsilon : {epsilon:.4f}"
+            if egreedy_like_p :
+                debug_message +=f"\nepsilon : {behavior_policy.epsilon:.4f}"
             
             
             self.writer.add_scalar("Train/Reward",np.mean(self.episode_reward), episode)
@@ -141,7 +137,8 @@ class Trainer :
             self.writer.add_scalar("Eval/AverageReward100",np.mean(self.episode_reward_eval[-100:]),episode)
             self.writer.add_scalar("Eval/AverageReward1000",np.mean(self.episode_reward_eval[-1000:]),episode)
 
-            if self.best_agent_score <= evaluation_score  and evaluation_score > -200 :
+            if self.best_agent_score <= evaluation_score  and evaluation_score > self.lowest_evaluation_score and 0:
+                continue
                 checkpoint = {
                                 "model":Agent.model,
                                 "model_state_dict":Agent.model.state_dict(),

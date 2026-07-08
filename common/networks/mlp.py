@@ -40,7 +40,7 @@ class MLP(nn.Module) :
         if isinstance(module, nn.Linear)  :
             nn.init.xavier_uniform_(module.weight) 
             nn.init.zeros_(module.bias)
-            #print("Init", *[(name, param.shape) for name, param in module.named_parameters()])
+            
 
     def forward(self,x):
         

@@ -5,7 +5,7 @@ import gymnasium as gym
 from trainer import Trainer
 from agent import DQNAgent
 from network import FCQNetwork
-from common.policies.epsilon_greedy import EpsilonGreedyStrategy
+from common.policies.epsilon_greedy import GreedyStrategy, EpsilonGreedyStrategy, EGreedyLinearDecayStrategy, EGreedyExponentialDecayStrategy
 from common.policies.softmax import SoftMaxStrategy
 import os
  
@@ -14,19 +14,26 @@ ENVIRONMENTS = {"cartpole":"CartPole-v1",
                 "mountaincar":"MountainCar-v0",
                 "acrobot":"Acrobot-v1"}
 
-BEHAVIOUR_POLICY_CHOICES = ["egreedy", "softmax", "gaussian", "greedy"]
+BEHAVIOUR_POLICY_CHOICES = ["greedy", "egreedy", "egreedylineardecay", "egreedyexpdecay","softmax", "gaussian"]
 MODES = ["eval", "train"]
 
 def run_launcher(args,Agent:DQNAgent,lowest_evaluation_score:int) :
     trainer = Trainer(lowest_evaluation_score=lowest_evaluation_score)
-    trainer.train(Agent=Agent,nb_episodes=args.max_episodes, ENV=args.env,DECAY_RATIO=args.decay_ratio)
+    trainer.train(Agent=Agent,nb_episodes=args.max_episodes, ENV=args.env)
     
 def select_policies(args) :
 
-    if args.behaviour_policy == "egreedy" :
-        return EpsilonGreedyStrategy(epsilon=args.epsilon, final_epsilon=args.final_epsilon)
+    scaleup = 5
+    if args.behaviour_policy == "greedy" :
+        return GreedyStrategy()
+    elif args.behaviour_policy == "egreedy" :
+        return EpsilonGreedyStrategy(epsilon=args.epsilon)
+    elif args.behaviour_policy == "egreedylineardecay" :
+        return EGreedyLinearDecayStrategy(max_steps=args.max_episodes*scaleup,initial_epsilon=args.epsilon,final_epsilon=args.final_epsilon,decay_ratio=args.decay_ratio)
+    elif args.behaviour_policy == "egreedyexpdecay" :
+        return EGreedyExponentialDecayStrategy(max_steps=args.max_episodes*scaleup,initial_epsilon=args.epsilon,final_epsilon=args.final_epsilon,decay_ratio=args.decay_ratio)
     elif args.behaviour_policy == "softmax" :
-        return SoftMaxStrategy()
+        return SoftMaxStrategy(init_temperature=args.init_temperature, min_temperature=args.init_temperature, exploration_ratio=args.exploration_ratio,  max_steps=args.max_episodes*scaleup)
     else :
         print(f"{args.behaviour_policy} is not yet implemented, so epsilon greedy will be selected instead")
         return EpsilonGreedyStrategy(epsilon=args.epsilon)
@@ -56,9 +63,11 @@ def parse_args() :
     parser.add_argument("--epsilon",default=0.1,type=float, help="epsilon value for exploration")
     parser.add_argument("--final_epsilon", default=0.1, type=float, help="the lower epsilon can get for when epsilon when epsilon greedy is selected, default is one")
     parser.add_argument("--decay_ratio", default=1.0, type=float, help="decay ratio for when epsilon when epsilon greedy is selected, default is one")
+    parser.add_argument("--temperature",default=1.0,type=float, help="softmax temperature parameter, default 1.0")
+    parser.add_argument("--min_temperature", default=0.3, type=float, help="softmax  minimum temperature parameter, default 0.3")
+    parser.add_argument("--exploration_ratio", default=1.0, type=float, help="softmax  exploration ratio, default 0.8")
     parser.add_argument("--seed", default=34,type=int, help="seeding, the default value is 34")
 
-    
     return parser.parse_args()
     
 def main() :
@@ -87,7 +96,7 @@ def main() :
         hidden_units = (256,256) 
         lowest_evaluation_score = -100
     else :
-        hidden_units = (4,4) 
+        hidden_units = (64,64) 
         lowest_evaluation_score = -200
 
     if args.launch != MODES[1] and args.launch != MODES[0] :
@@ -118,10 +127,10 @@ def main() :
         CHECKPOINT_FILE = f"./results/dqn/{args.env}/{args.env}_best.pth"
         if os.path.isfile(CHECKPOINT_FILE) :
             checkpoint = torch.load(CHECKPOINT_FILE,weights_only=False)
-            Agent.model.load_state_dict(checkpoint['model_state_dict'])
+            Agent.online_model.load_state_dict(checkpoint['model_state_dict'])
             print(checkpoint["best_score"])
         else :
-            print("dod not found the model path")
+            print("did not found the model path")
             exit()
         print("Evaluation Mode")
         

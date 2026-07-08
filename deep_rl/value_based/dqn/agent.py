@@ -66,10 +66,11 @@ class DQNAgent :
         self.cummulative_reward_per_episdode = 0
 
         
-        self.model:FCQNetwork = value_model_fn(self.nS, self.nA)
-        
+        self.online_model:FCQNetwork = value_model_fn(self.nS, self.nA)
+        self.target_model:FCQNetwork = value_model_fn(self.nS, self.nA)
+
         self.value_optimizer_lr   = value_optimizer_lr
-        self.optimizer    = value_optimizer_fn(self.model,self.value_optimizer_lr)
+        self.optimizer    = value_optimizer_fn(self.online_model,self.value_optimizer_lr)
         self.training_strategy_fn = training_strategy_fn
         self.batch_size=  batch_size
         
@@ -81,8 +82,11 @@ class DQNAgent :
         self.buffer = ReplayBuffer(batch_size=self.batch_size)
         self.learning_rate = value_optimizer_lr
         self.loss = 0
-        self.training_strategy_fn = training_strategy_fn
         
+        self.episode_reward = [] 
+        self.episode_reward_eval = []
+        self.episode_timestep = []
+
         print("DQNAgent")
 
 
@@ -101,23 +105,24 @@ class DQNAgent :
 
     def iteration_step(self, state) :
         
-        action = self.training_strategy_fn.select_discret_action(self.model,state)
+        action = self.training_strategy_fn.select_discret_action(self.online_model,state)
         new_state, reward, terminal, truncated, _ = self.Env.step(action=action)
         is_terminated = terminal or truncated
         experience = (state, action, reward, new_state, float(terminal))
-
+        self.episode_reward[-1] += reward
+        self.episode_timestep[-1] += 1
         self.store(experience=experience)
         return new_state, is_terminated 
     
     def update(self, experiences) :
         states, actions, rewards, next_states, is_terminated = experiences
         
-        q_sa     = self.model(states).gather(1, actions)
+        q_sa     = self.online_model(states).gather(1, actions)
         
-        max_a_q_sp = self.model(next_states).detach().max(1)[0].unsqueeze(1)
-        td_target_qs = rewards +  self.gamma * max_a_q_sp * ( 1 - is_terminated )
+        max_a_q_sp = self.target_model(next_states).detach().max(1)[0].unsqueeze(1)
+        td_target_qsa = rewards +  self.gamma * max_a_q_sp * ( 1 - is_terminated )
         
-        td_errors  = td_target_qs - q_sa
+        td_errors  = td_target_qsa - q_sa
 
         value_losses = td_errors.pow(2).mul(0.5).mean()
 
@@ -127,11 +132,19 @@ class DQNAgent :
         value_losses.backward()
         self.optimizer.step()
 
+        #torch.nn.utils.clip_grad_norm_(self.online_model.parameters(), 
+        #                               30)
+
+    def update_target_network(self) :
+
+        for online, target in zip(self.online_model.parameters(), self.target_model.parameters()) :
+            target.data.copy_(online.data)
+
     def evaluate(self, max_episodes:int=1):
 
         rewards=[]
         state, _ = self.Env.reset()
-        
+        experience = []
         for i in range( max_episodes ) :
             if self.mode == "eval" :
                 print(f"episode[{i+1}/{max_episodes}]")
@@ -139,17 +152,22 @@ class DQNAgent :
             while True :
                 
                 with torch.inference_mode() :
-                    q_values = self.model(state).detach().cpu().data.numpy().squeeze()
+                    q_values = self.online_model(state).detach().cpu().data.numpy().squeeze()
 
                 state, reward, terminal, truncated, _=  self.Env.step( np.argmax( q_values  ) )
+
+               
                 
+
+
                 rewards[-1] += reward
                 if terminal or truncated :
                     if self.mode == "eval" :
                         state, _ = self.Env.reset()
                     break
-  
-        return np.mean(rewards)
+
+
+        return np.mean(rewards), terminal
         
     def create_gif(self,max_episodes:int=1  ) :
         images = []
@@ -168,7 +186,7 @@ class DQNAgent :
                 
                 
                 with torch.inference_mode() :
-                        q_values = self.model(state).detach().cpu().data.numpy().squeeze()
+                        q_values = self.online_model(state).detach().cpu().data.numpy().squeeze()
 
                 state, _, terminated, truncated, _ = self.Env.step(np.argmax( q_values  ))
 
