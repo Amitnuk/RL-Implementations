@@ -54,8 +54,11 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 
 # Results
 Trained acrobot [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/acrobot)
+
 Trained cartpole [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/cartpole)
+
 Trained lunarlander [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/lunarlander)
+
 Trained mountaincar [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/mountaincar)
 
 [GIFS](https://github.com/Amitnuk/RL-Implementations/tree/main/experiments/figures) 
