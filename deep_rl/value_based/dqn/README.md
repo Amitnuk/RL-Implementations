@@ -17,7 +17,7 @@ DQN, at its core, can be viewed as Q-learning with function approximation. As wi
 
 
 $$
-\pi^*(s) = \arg\max_{a} Q^*(s, a)
+\pi^{\ast}(s) = \arg\max_{a} Q^{\ast}(s, a)
 $$
 
 Where Q represents the expected discounted cumulative future rewards.
