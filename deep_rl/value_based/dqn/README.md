@@ -32,16 +32,16 @@ DQN tackles the two problems mentioned by adding a mechanism to obtain (1) data 
 
 ### Background
 
-DQN introduces two meachnisms, (1) experience replay and (2) target network. Together, they mitigate the aforementioned problems concerning i.i. and fixed target distribution. Let start with with experience repaly ant then move to target network, which I believe to be the DQN groundbreaking idea.
+DQN introduces two mechanisms, (1) experience replay and (2) target network. Together, they mitigate the aforementioned problems concerning i.i. and fixed target distribution. Let's start with experience replay ant then move to target network, which I believe to be the DQN groundbreaking idea.
 
 * Experience replay : 
 
 During the interactions in environment, the agent stores at each time step, $$e_{t}={s_{t}, a_{t}, r_{t}, s_{t+1}}$$ in the replay buffer *D*. 
-Then, the Q-learning updates are done with mini-batches sampled uniformely from  *D*. This process many advantages, i cite three, first it is sample efficient, second it breaks the correlation in the data, resulting in lower variance of the updates and third, it decouples the current policy behaviour with batch selected for the updates, which can smmoth out the learning and reduce non-stationarity.
+Then, the Q-learning updates are done with mini-batches sampled uniformly from  *D*. This process has many advantages, i'll cite three, first it is sample efficient, second it breaks the correlation in the data, resulting in lower variance of the updates and third, it decouples the current policy behaviour with the batches selected for the updates, which can smmoth out the learning and reduce non-stationarity.
 
 * Target network.
 
-To improve the stability, a second network(target network) is introduced to generate the targets $$y_{j}=r_{j} +  \max_{a} Q(s, a, \theta^-)$$. This technique mitigates the moving target issue. The target network trails behind the main network approximating $$Q^(s, a; \theta)$$, where the weights of the target $$Q(s, a; \theta^-)$$ are kept unchanged for every *M* steps. At the *Mth* step after performing gradient descent with respect $$\theta$$, the second network is resetted using the the main network weights and the process repeats. 
+To improve the stability, a second network (target network) is introduced to generate the targets $$y_{j}=r_{j} +  \max_{a} Q(s, a; \theta^-)$$. This technique mitigates the moving target issue. The target network trails behind the main network, approximating $$Q^(s, a)$$, where the weights of the target network $$Q(s, a; \theta^-)$$ are kept unchanged for every *M* steps. At the *Mth* step after performing gradient descent with respect to $$\theta$$, the second network is reset using the main network weights and the process repeats. 
 
 
 
