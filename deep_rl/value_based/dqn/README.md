@@ -32,7 +32,7 @@ DQN tackles the two problems mentioned by adding a mechanism to obtain (1) data 
 
 ### Background
 
-DQN introduces two mechanisms, (1) experience replay and (2) target network. Together, they mitigate the aforementioned problems concerning i.i. and fixed target distribution. Let's start with experience replay ant then move to target network, which I believe to be the DQN groundbreaking idea.
+DQN introduces two mechanisms, (1) experience replay and (2) target network. Together, they mitigate the aforementioned problems concerning i.i. and fixed target distribution. Let's start with experience replay then move to target network, which I believe to be the DQN groundbreaking idea.
 
 * Experience replay : 
 
@@ -42,6 +42,7 @@ Then, the Q-learning updates are done with mini-batches sampled uniformly from  
 * Target network.
 
 To improve the stability, a second network (target network) is introduced to generate the targets $$y_{j}=r_{j} +  \max_{a} Q(s, a; \theta^-)$$. This technique mitigates the moving target issue. The target network trails behind the main network, approximating $$Q^(s, a)$$, where the weights of the target network $$Q(s, a; \theta^-)$$ are kept unchanged for every *M* steps. At the *Mth* step after performing gradient descent with respect to $$\theta$$, the second network is reset using the main network weights and the process repeats. 
+
 
 
 
