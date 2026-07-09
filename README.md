@@ -35,7 +35,7 @@ The action space is reresented with 4 discrete action ranging for 0 to 3 :
 The [Cartpole](https://gymnasium.farama.org/environments/classic_control/cart_pole/) environment simulates the balacing of pole attached to a cart.
 
 In Cartpole the observation space is an 4-dimensional continuous vector, representing  the cart position, the cart velocity, the pole angle and the pole angle speed.
-The action space is reresented with 2 discrete action ranging for 0 to 1 : 
+The action space is represented with 2 discrete action ranging for 0 to 1 : 
 
 * 0: Push cart to the left
 * 1: Push cart to the right
@@ -45,7 +45,7 @@ Car racing, balckjack, cliff walking, half cheetah, pusher, ant humanoid standup
 
 # TODO 
 - [X] [Neural Fitted Q Iteration](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/nfqi)
-- [ ] [DQN](https://arxiv.org/abs/1312.5602)
+- [X] [DQN](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/dqn)
 - [ ] [Double Q-Learning](https://arxiv.org/abs/1509.06461)
 - [ ] [Reinforce](https://proceedings.neurips.cc/paper_files/paper/1999/file/464d828b85b0bed98e80ade0a5c43b0f-Paper.pdf)
 - [ ] [DDPG](https://arxiv.org/pdf/1509.02971)
