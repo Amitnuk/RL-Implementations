@@ -40,7 +40,7 @@ During the interactions in environment, the agent stores at each time step, $$e_
 Then, the Q-learning updates are done with mini-batches sampled uniformely from  *D*. This process many advantages, i cite three, first it is sample efficient, second it breaks the correlation in the data, resulting in lower variance of the updates and third, it decouples the current policy behaviour with batch selected for the updates, which can smmoth out the learning and reduce non-stationarity.
 
 * Target network.
-To improve the stability, a second network is introduced to generate the targets $$y_{j}=r_{j} +  \arg\max_{a} Q^{\ast}(s, a, \theta^-)$$. This technique mitigates the moving target issue. This network trails behind the main network approximating $$Q^{\ast}(s, a, \theta)$$, where the weights of $$Q^{\ast}(s, a, \theta^-)$$ are kept unchanged for every C steps.
+To improve the stability, a second network(target network) is introduced to generate the targets $$y_{j}=r_{j} +  \max_{a} Q(s, a, \theta^-)$$. This technique mitigates the moving target issue. The target network trails behind the main network approximating $$Q^(s, a; \theta)$$, where the weights of the target $$Q(s, a; \theta^-)$$ are kept unchanged for every *M* steps. At the *Mth* step after performing gradient descent with respect $$\theta$$, the second network is resetted using the the main network weights and the process repeats. 
 
 
 
