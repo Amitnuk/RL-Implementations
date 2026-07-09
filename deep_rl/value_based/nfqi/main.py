@@ -131,7 +131,7 @@ def main() :
             Agent.model.load_state_dict(checkpoint['model_state_dict'])
             print(checkpoint["best_score"])
         else :
-            print("dod not found the model path")
+            print("did not found the model path")
             exit()
         print("Evaluation Mode")
         

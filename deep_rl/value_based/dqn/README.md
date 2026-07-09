@@ -3,7 +3,7 @@ This repository is under active development. Some sections contain high-level in
 Grammatical mistakes, inconsistencies, and informal explanations are to be expected.
 
 # Goal 
-Solving CartPole, Lunar Lander, and many more using [DQN](https://arxiv.org/pdf/1312.5602).
+Solving CartPole, Lunar Lander, using [DQN](https://arxiv.org/pdf/1312.5602).
 
 These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.html), a quick overview can be found at [[1](https://github.com/Amitnuk/RL-Implementations/tree/main)]
 
@@ -23,11 +23,13 @@ These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.htm
 - [X] training lundar lander
 - [X] training mountain car
 - [X] training acrobot
-- [ ] testing module
+- [ ] training on Atari (Needs Convolutions for the images)
+- [X] testing module
 - [ ] plots
-- [ ] a rigorous explanation
+- [ ] explanation
 - [ ] requirement and a usage section
 - [ ] grammar correction and some other minor details
+
 
 
 
@@ -65,6 +67,15 @@ hidden_units = (64,64)
 if np.sum(Agent.episode_timestep) % 7000 == 0 :
 
 
+# Training Config
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env cartpole --max_episodes 4000 --buffer_size 50000 --gamma 1 --behaviour_policy egreedyexpdecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.5 --decay_ratio 0.85 --seed 34
+
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env lunarlander --max_episodes 4000 --buffer_size 50000 --gamma 0.99 --behaviour_policy egreedyexpdecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.3 --decay_ratio 0.99 --seed 34
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env mountaincar --max_episodes 4000 --buffer_size 200000 --gamma 0.99 --behaviour_policy egreedylineardecay --batch_size 32 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.25 --decay_ratio 0.85 --seed 34
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env acrobot  --max_episodes 4000 --buffer_size 200000 --gamma 0.99 --behaviour_policy egreedylineardecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.3 --decay_ratio 0.85 --seed 34
 
 
 

@@ -2,11 +2,11 @@ import torch
 from torch.optim import Adam, Optimizer, RMSprop, SGD
 import argparse
 import gymnasium as gym
-from trainer import Trainer
 from agent import DQNAgent
 from network import FCQNetwork
 from common.policies.epsilon_greedy import GreedyStrategy, EpsilonGreedyStrategy, EGreedyLinearDecayStrategy, EGreedyExponentialDecayStrategy
 from common.policies.softmax import SoftMaxStrategy
+from common.utils.trainer import Trainer
 import os
  
 ENVIRONMENTS = {"cartpole":"CartPole-v1",
@@ -24,7 +24,7 @@ def run_launcher(args,Agent:DQNAgent,lowest_evaluation_score:int) :
     
 def select_policies(args) :
 
-    max_steps = 90000
+    max_steps = 500000
     if args.behaviour_policy == "greedy" :
         return GreedyStrategy()
     elif args.behaviour_policy == "egreedy" :
@@ -68,6 +68,8 @@ def parse_args() :
     parser.add_argument("--min_temperature", default=0.3, type=float, help="softmax  minimum temperature parameter, default 0.3")
     parser.add_argument("--exploration_ratio", default=1.0, type=float, help="softmax  exploration ratio, default 0.8")
     parser.add_argument("--seed", default=34,type=int, help="seeding, the default value is 34")
+  
+
 
     return parser.parse_args()
     
@@ -90,15 +92,19 @@ def main() :
     if args.env == "cartpole" :
         hidden_units = (512,128)
         lowest_evaluation_score = 0
+        update_target_every_steps = 10
     elif args.env == "lunarlander":
         hidden_units = (256,256)
         lowest_evaluation_score = 0
+        update_target_every_steps = 50
     elif args.env == "acrobot" :
         hidden_units = (256,256) 
-        lowest_evaluation_score = -100
+        lowest_evaluation_score = -500
+        update_target_every_steps=10
     else :
         hidden_units = (64,64) 
         lowest_evaluation_score = -200
+        update_target_every_steps=7000
 
     if args.launch != MODES[1] and args.launch != MODES[0] :
         print("must choose the launcing mode, train or eval")
@@ -107,15 +113,16 @@ def main() :
     model = lambda nS, nA : FCQNetwork(input_shape=nS, output_shape=nA,hidden_units=hidden_units,device=device)
     
     Agent = DQNAgent(env_name=ENVIRONMENTS[args.env],
-                        value_model_fn=model,
-                        value_optimizer_fn=select_optimizer(args),
-                        value_optimizer_lr=args.lr,
-                        training_strategy_fn=select_policies(args=args),
-                        gamma=args.gamma,
-                        batch_size=args.batch_size,
-                        epochs=args.epochs,
-                        seed=args.seed,
-                        mode=args.launch)
+                     value_model_fn=model,
+                     value_optimizer_fn=select_optimizer(args),
+                     value_optimizer_lr=args.lr,
+                     training_strategy_fn=select_policies(args=args),
+                     gamma=args.gamma,
+                     batch_size=args.batch_size,
+                     epochs=args.epochs,
+                     seed=args.seed,
+                     update_target_every_steps = update_target_every_steps,
+                     mode=args.launch)
     
 
     if args.launch == MODES[1] : 

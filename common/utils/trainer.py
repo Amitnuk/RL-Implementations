@@ -1,7 +1,6 @@
 import torch
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
-from agent import DQNAgent
 import os
 from itertools import count
 
@@ -11,7 +10,7 @@ class Trainer :
         self.lowest_evaluation_score = lowest_evaluation_score
 
 
-    def fqi_debug_step(self,Agent:DQNAgent, states):
+    def fqi_debug_step(self,Agent, states):
         with torch.inference_mode():
             q = Agent.online_model(states)
 
@@ -20,7 +19,7 @@ class Trainer :
         return {**q_stats}
     
     def train(self,
-              Agent:DQNAgent,
+              Agent,
               nb_episodes:int,
               ENV:str) :
 
@@ -29,7 +28,14 @@ class Trainer :
         total_step = 0
         evaluation_score = 0
 
-        TENSORBOARD_PATH = f"runs/dqn/{Agent.env_name[:-3].lower()}"
+
+        AgentName = Agent.__class__.__name__
+        if "Agent" not in AgentName :
+            print(f"The Agent Name is Wrong, it shoud be AlgorithmAgent, eg:(DQNAgent or SACAgent), instead if {AgentName}")
+            exit()
+
+        algorithm = AgentName.replace("Agent", "").lower()
+        TENSORBOARD_PATH = f"runs/{algorithm}/{Agent.env_name[:-3].lower()}"
         behavior_policy = Agent.training_strategy_fn
         egreedy_like_p = False
 
@@ -52,62 +58,34 @@ class Trainer :
                          "q_std": 0,
                          "mean_gap": 0,
                          "min_gap": 0,
-                         "max_gap": 0}
+                         "max_gap": 0,
+                         "loss":0}
         
         total_step = 0
-        
+        best_episode = -1
         for episode in range(1, nb_episodes + 1) :
-            
-            Agent.episode_reward.append(0.0)   
-            Agent.episode_reward_eval.append(0.0)
-            Agent.episode_timestep.append(0.0)
-            state, _ = Agent.Env.reset(seed=Agent.seed + episode -1)
-            
             print("TRAIN")
-            for step in count() :
-                state, is_terminated = Agent.act(state)
-                
-                if len(Agent.buffer) >= Agent.batch_size * Agent.n_warmup_batches :
-                    experience_batch = Agent.buffer.sample()
-                    experiences = Agent.online_model.load(experience_batch)
+            debug_results = Agent.interact(episode, egreedy_like_p, self.writer, self.fqi_debug_step, debug_results)
+            total_step += 1
 
-
-                    Agent.update(experiences=experiences)
-                    loss = Agent.loss
-                    
-                    debug_results = self.fqi_debug_step(Agent, experiences[0])
-                   
-                    self.writer.add_scalar("Train/Loss",loss, total_step)
-                    if egreedy_like_p :
-                        self.writer.add_scalar("Train/Epsilon",behavior_policy.epsilon, episode)
-                    
-                    EVAL_MODE = True
-                    
-                if np.sum(Agent.episode_timestep) % Agent.update_target_every_steps == 0 :
-                    Agent.update_target_network()
-
-
-                total_step += 1
-                if is_terminated :
-                    break
-
-           
             print("EVAL")
+            EVAL_MODE = True
             evaluation_score, done = Agent.evaluate()
             Agent.episode_reward_eval[-1] = evaluation_score
             
             
             debug_message =f"\nepisode: {episode}"
-            debug_message +=f"\ntraining score: {np.mean(Agent.episode_reward):.2f}"
-            debug_message +=f"\ntraining score last episodes: {Agent.episode_reward[-1]:.2f}"
+            debug_message +=f"\ntraining score last episode: {Agent.episode_reward[-1]:.2f}"
             debug_message +=f"\ntraining score for last 10 episodes : {np.mean(Agent.episode_reward[-10:]):.2f}"
             debug_message +=f"\ntraining score for last 100 episodes : {np.mean(Agent.episode_reward[-100:]):.2f}"
             debug_message +=f"\ntraining score for last 1000 episodes : {np.mean(Agent.episode_reward[-1000:]):.2f}"
+            debug_message +=f"\ntraining score for all episodes: {np.mean(Agent.episode_reward):.2f}"
             debug_message +=f"\ntraining episode_timestep : {np.sum(Agent.episode_timestep):.2f}"
             debug_message +=f"\nnumber of total steps: {total_step}"
 
             if EVAL_MODE :
-                debug_message +=f"\ntraining loss : {loss:.5f}"
+
+                debug_message +=f"\ntraining loss : {debug_results['loss']:.5f}"
                 debug_message +=f"\nq_mean : {debug_results['q_mean']}"
                 debug_message +=f"\nq_max : {debug_results['q_max']}"
                 debug_message +=f"\nq_min: {debug_results['q_min']}"
@@ -116,24 +94,27 @@ class Trainer :
                 debug_message +=f"\nmin_gap : {debug_results['min_gap']}"
                 debug_message +=f"\nmax_gap: {debug_results['max_gap']}"
 
-            debug_message +=f"\nevaluation score: {evaluation_score:.2f}"
+            debug_message +=f"\nevaluation score last episode: {Agent.episode_reward_eval[-1]:.2f}"
             debug_message +=f"\nevaluation score for last 10 episodes : {np.mean(Agent.episode_reward_eval[-10:]):.2f}"
             debug_message +=f"\nevaluation score for last 100 episodes : {np.mean(Agent.episode_reward_eval[-100:]):.2f}"
             debug_message +=f"\nevaluation score for last 1000 episodes : {np.mean(Agent.episode_reward_eval[-100:]):.2f}"
+            debug_message +=f"\nevaluation score for all episodes : {np.mean(Agent.episode_reward_eval):.2f}"
 
             if egreedy_like_p :
                 debug_message +=f"\nepsilon : {behavior_policy.epsilon:.4f}"
             
             
-            self.writer.add_scalar("Train/Reward",np.mean(Agent.episode_reward), episode)
-            self.writer.add_scalar("Train/AverageReward10",np.mean(Agent.episode_reward[-10:]),episode)
-            self.writer.add_scalar("Train/AverageReward100",np.mean(Agent.episode_reward[-100:]),episode)
-            self.writer.add_scalar("Train/AverageReward1000",np.mean(Agent.episode_reward[-1000:]),episode)
+            self.writer.add_scalar("Train/Reward",Agent.episode_reward[-1], episode)
+            self.writer.add_scalar("Train/RewardMean",np.mean(Agent.episode_reward), episode)
+            self.writer.add_scalar("Train/AverageRewardMean10",np.mean(Agent.episode_reward[-10:]),episode)
+            self.writer.add_scalar("Train/AverageRewardMean100",np.mean(Agent.episode_reward[-100:]),episode)
+            self.writer.add_scalar("Train/AverageRewardMean1000",np.mean(Agent.episode_reward[-1000:]),episode)
 
-            self.writer.add_scalar("Eval/Reward",np.mean(Agent.episode_reward_eval), episode)
-            self.writer.add_scalar("Eval/AverageReward10",np.mean(Agent.episode_reward_eval[-10:]),episode)
-            self.writer.add_scalar("Eval/AverageReward100",np.mean(Agent.episode_reward_eval[-100:]),episode)
-            self.writer.add_scalar("Eval/AverageReward1000",np.mean(Agent.episode_reward_eval[-1000:]),episode)
+            self.writer.add_scalar("Eval/Reward",Agent.episode_reward_eval[-1], episode)
+            self.writer.add_scalar("Eval/RewardMean",np.mean(Agent.episode_reward_eval), episode)
+            self.writer.add_scalar("Eval/AverageRewardMean10",np.mean(Agent.episode_reward_eval[-10:]),episode)
+            self.writer.add_scalar("Eval/AverageRewardMean100",np.mean(Agent.episode_reward_eval[-100:]),episode)
+            self.writer.add_scalar("Eval/AverageRewardMean1000",np.mean(Agent.episode_reward_eval[-1000:]),episode)
 
             if self.best_agent_score <= evaluation_score  and evaluation_score > self.lowest_evaluation_score :
                 checkpoint = {
@@ -147,12 +128,13 @@ class Trainer :
                                 "best_score":evaluation_score}
                 
                 self.best_agent_score = evaluation_score
-                CHECKPOINT_FILE = f"results/dqn/{ENV}/{ENV}_best.pth"
+                best_episode = episode
+                CHECKPOINT_FILE = f"results/{algorithm}/{ENV}/{ENV}_best.pth"
                 CHECKPOINT_DIR = os.path.join("./", CHECKPOINT_FILE)
                 torch.save(checkpoint,CHECKPOINT_DIR)
                 print("SAVING MODEL")
                 
-            debug_message+=f"\nbest evaluation score so far: {self.best_agent_score}"
+            debug_message+=f"\nbest evaluation score so far: {self.best_agent_score} at episode: {best_episode}"
 
             os.system("clear")
             print(debug_message)

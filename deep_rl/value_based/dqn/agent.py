@@ -10,6 +10,7 @@ import random
 import imageio.v2 as imageio
 import matplotlib.pyplot as plt
 from network import FCQNetwork
+from itertools import count
 
 
 class DQNAgent :
@@ -23,11 +24,12 @@ class DQNAgent :
                  batch_size:int=100,
                  epochs:int=40,
                  seed:int=34,
+                 update_target_every_steps:int=10,
                  mode:str=eval) :
         
         self.mode = mode
         self.env_name = env_name
-       
+        self.name = "dqn"
      
         if self.mode == "eval" :
             self.Env = gym.make(id=self.env_name, render_mode="human")
@@ -81,12 +83,13 @@ class DQNAgent :
         self.epochs = epochs
         self.buffer = ReplayBuffer(batch_size=self.batch_size)
         self.learning_rate = value_optimizer_lr
+        self.update_target_every_steps= update_target_every_steps
+        self.n_warmup_batches = 8
         self.loss = 0
         
         self.episode_reward = [] 
         self.episode_reward_eval = []
         self.episode_timestep = []
-
         print("DQNAgent")
 
 
@@ -98,7 +101,6 @@ class DQNAgent :
     
     def store(self,experience) :
         self.buffer.store(experience=experience)
-
 
     def clear(self) :
          self.buffer.clear()
@@ -113,6 +115,41 @@ class DQNAgent :
         self.episode_timestep[-1] += 1
         self.store(experience=experience)
         return new_state, is_terminated 
+    
+    def interact(self, episode, egreedy_like_p, writer, fqi_debug_step, debug_results) :
+
+        self.episode_reward.append(0.0)   
+        self.episode_reward_eval.append(0.0)
+        self.episode_timestep.append(0.0)
+        state, _ = self.Env.reset(seed=self.seed + episode -1)
+       
+
+        for step in count() :
+            state, is_terminated = self.act(state)
+            
+            if len(self.buffer) >= self.batch_size * self.n_warmup_batches :
+                experience_batch = self.buffer.sample()
+                experiences = self.online_model.load(experience_batch)
+                self.update(experiences=experiences)
+               
+                    
+                debug_results = fqi_debug_step(self, experiences[0])
+                debug_results["loss"] = self.loss
+                writer.add_scalar("Train/Loss",self.loss, step)
+                if egreedy_like_p :
+                    writer.add_scalar("Train/Epsilon",self.training_strategy_fn.epsilon, episode)
+                
+                EVAL_MODE = True
+                
+            if np.sum(self.episode_timestep) % self.update_target_every_steps == 0 :
+                self.update_target_network()
+
+
+            
+            if is_terminated :
+                return debug_results
+
+
     
     def update(self, experiences) :
         states, actions, rewards, next_states, is_terminated = experiences
@@ -156,10 +193,6 @@ class DQNAgent :
 
                 state, reward, terminal, truncated, _=  self.Env.step( np.argmax( q_values  ) )
 
-               
-                
-
-
                 rewards[-1] += reward
                 if terminal or truncated :
                     if self.mode == "eval" :
@@ -195,7 +228,7 @@ class DQNAgent :
                     break
 
         print("num frames:", len(images))
-        FileToSave = f"./experiments/figures/dqn_{self.env_name[:-3].lower()}.gif"
+        FileToSave = f"./experiments/figures/{self.name}_{self.env_name[:-3].lower()}.gif"
        
         with imageio.get_writer(FileToSave, mode="I",fps=30,loop=0 ) as writer:
              for img in images:
@@ -216,5 +249,6 @@ class DQNAgent :
             "mean_gap": gap.mean().item(),
             "min_gap": gap.min().item(),
             "max_gap": gap.max().item(),
+            "loss":0.0
         }
     
