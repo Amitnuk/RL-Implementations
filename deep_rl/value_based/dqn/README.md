@@ -14,7 +14,24 @@ These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.htm
 # Usage 
 ## Training
 
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env cartpole --max_episodes 4000 --buffer_size 50000 --gamma 1 --behaviour_policy egreedyexpdecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.5 --decay_ratio 0.85 --seed 34
+
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env lunarlander --max_episodes 4000 --buffer_size 50000 --gamma 0.99 --behaviour_policy egreedyexpdecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.3 --decay_ratio 0.99 --seed 34
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env mountaincar --max_episodes 4000 --buffer_size 200000 --gamma 0.99 --behaviour_policy egreedylineardecay --batch_size 32 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.25 --decay_ratio 0.85 --seed 34
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env acrobot  --max_episodes 4000 --buffer_size 200000 --gamma 0.99 --behaviour_policy egreedylineardecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.3 --decay_ratio 0.85 --seed 34
+
 ## Testing
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env cartpole 
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval  --env lunarlander 
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env mountaincar 
+
+python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot  
 
 # TODO
 
@@ -36,6 +53,13 @@ These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.htm
 # Notes
 
 # Results
+Trained acrobot [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/acrobot)
+Trained cartpole [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/cartpole)
+Trained lunarlander [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/lunarlander)
+Trained mountaincar [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/mountaincar)
+
+[GIFS](https://github.com/Amitnuk/RL-Implementations/tree/main/experiments/figures) 
+
 ## Graphs
 
 
