@@ -5,7 +5,7 @@ Grammatical mistakes, inconsistencies, and informal explanations are to be expec
 # Goal 
 Solving CartPole, Lunar Lander, mountain car, acrobot and the Atari Games using [DQN](https://arxiv.org/pdf/1312.5602).
 
-These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.html), a quick overview can be found at [[1](https://github.com/Amitnuk/RL-Implementations/tree/main)]
+These environments are part of [Gymnasium](https://gymnasium.farama.org/index.html), a quick overview can be found at [[1](https://github.com/Amitnuk/RL-Implementations/tree/main)]
 
 # DQN
 
@@ -14,8 +14,10 @@ These enviroments are part of [Gymnasium](https://gymnasium.farama.org/index.htm
 ### Motivation 
 
 DQN, at its core, can be viewed as Q-learning with function approximation. As with any RL algorithm, the goal is to find a policy that maximizes the expected discounted cumulative future rewards. From the Bellman optimality equation, the optimal policy is defined as:
+
+
 $$
-\Pi(s) = \arg\max_ a Q(s,a)
+\pi^*(s) = \arg\max_{a} Q^*(s, a)
 $$
 
 Where Q represents the expected discounted cumulative future rewards.
