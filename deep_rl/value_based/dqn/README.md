@@ -32,6 +32,18 @@ DQN tackles the two problems mentioned by adding a mechanism to obtain (1) data 
 
 ### Background
 
+DQN introduces two meachnisms, (1) experience replay and (2) target network. Together, they mitigate the aforementioned problems concerning i.i. and fixed target distribution. Let start with with experience repaly ant then move to target network, which I believe to be the DQN groundbreaking idea.
+
+* Experience replay : 
+
+During the interactions in environment, the agent stores at each time step, $$e_{t}={s_{t}, a_{t}, r_{t}, s_{t+1}}$$ in the replay buffer *D*. 
+Then, the Q-learning updates are done with mini-batches sampled uniformely from  *D*. This process many advantages, i cite three, first it is sample efficient, second it breaks the correlation in the data, resulting in lower variance of the updates and third, it decouples the current policy behaviour with batch selected for the updates, which can smmoth out the learning and reduce non-stationarity.
+
+* Target network.
+To improve the stability, a second network is introduced to generate the targets $$y_{j}=r_{j} +  \arg\max_{a} Q^{\ast}(s, a, \theta^-)$$. This technique mitigates the moving target issue. This network trails behind the main network approximating $$Q^{\ast}(s, a, \theta)$$, where the weights of $$Q^{\ast}(s, a, \theta^-)$$ are kept unchanged for every C steps.
+
+
+
 # Usage 
 ## Training
 
