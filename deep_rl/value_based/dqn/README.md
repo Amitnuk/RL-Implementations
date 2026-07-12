@@ -91,8 +91,7 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 # Notes
 
 # Empirical results and training configurations
-## Graphs 
-### Cartpole
+## Cartpole
 <table>
   <tr>
     <td align="center">
@@ -117,39 +116,73 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 The graphics above showcase the courbes for the reward and moving average of the same object in evaluation, as we can see the agent learns to maintain the pole upright, converging to the max reward allowed for raw rewards collected and around 400 fot the average. The Q-value is model by MLP with two hidden layers with 512 and 128 neurons respectivelly, with a batch size of 64 and discount factor 1. The activation function is a ReLU and optimizer is Adam with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a exponentially decaying epsilon that starts from 1.0 and stops at 0.5. 
 
 
+## lunar lander
 
-python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env cartpole --max_episodes 4000 --buffer_size 50000 --gamma 1 --behaviour_policy egreedyexpdecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.5 --decay_ratio 0.85 --seed 34
+<table>
+  <tr>
+    <td align="center">
+      <b>Cartpole reward and average reward curve</b>
+    </td>
+    <td align="center">
+      <b>Animation</b>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_lunarlander.png?raw=true" width="400"/>
+    </td>
+    <td>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dqn_lunarlander.gif?raw=true" width="400"/>
+    </td>
+  </tr>
+</table>
 
-### lunarlander
-| Lunar lander Average and Moving Average courbe|
-|----------|
-| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_lunarlander.png)
+
+## lunar lander
+
+<table>
+  <tr>
+    <td align="center">
+      <b>Cartpole reward and average reward curve</b>
+    </td>
+    <td align="center">
+      <b>Animation</b>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_mountaincar.png?raw=true" width="400"/>
+    </td>
+    <td>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dqn_mountaincar.gif?raw=true" width="400"/>
+    </td>
+  </tr>
+</table>
 
 
-### Mountaincar
-| Mountain car Average and Moving Average courbe|
-|----------|
-| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_mountaincar.png)
-
-
-### Acrobot
+## Acrobot
 | Acrobot Average and Moving Average courbe|
 |----------|
 | ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_acrobot.png)
 
-
-
-Trained acrobot [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/acrobot)
-
-Trained cartpole [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/cartpole)
-
-Trained lunarlander [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/lunarlander)
-
-Trained mountaincar [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/mountaincar)
-
-[GIFS](https://github.com/Amitnuk/RL-Implementations/tree/main/experiments/figures) 
-
-## Graphs
+<table>
+  <tr>
+    <td align="center">
+      <b>Cartpole reward and average reward curve</b>
+    </td>
+    <td align="center">
+      <b>Animation</b>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_acrobot.png?raw=true" width="400"/>
+    </td>
+    <td>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dqn_acrobot.gif?raw=true" width="400"/>
+    </td>
+  </tr>
+</table>
 
 
 # Summary 
