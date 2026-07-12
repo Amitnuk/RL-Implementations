@@ -201,6 +201,7 @@ $$
 
 E[max(X_{1}, X_{2})] \geq max(E[X_{1}] , E[X_{2}] )
 
+$$
 
 The $$max$$ operator selects the errors in positive direction of the noise, thus creating overestimation bias.
 One possible solution, is to decorrelate the process of action selection and the evaluation.
