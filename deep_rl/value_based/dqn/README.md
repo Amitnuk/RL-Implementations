@@ -93,11 +93,24 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 # Empirical results and training configurations
 ## Graphs 
 ### Cartpole
-| Cartpole reward and average reward courbe| Animation |
-|----------|----------|
-| ![Cartepole](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png) | ![Gif](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png) |
-
-
+<table>
+  <tr>
+    <td align="center">
+      <b>Cartpole reward and average reward curve</b>
+    </td>
+    <td align="center">
+      <b>Animation</b>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png?raw=true" width="400"/>
+    </td>
+    <td>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dnq_cartpole.gif?raw=true" width="400"/>
+    </td>
+  </tr>
+</table>
 
 
 
