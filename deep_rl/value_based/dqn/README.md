@@ -78,17 +78,15 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 - [X] training lundar lander
 - [X] training mountain car
 - [X] training acrobot
-- [ ] training on Atari (Needs Convolutions for the images)
+- [ ] training on Atari (Needs Convolutions for the images) like the original paper
 - [X] testing module
-- [ ] plots
+- [X] plots
 - [ ] explanation
 - [ ] requirement and a usage section
 - [ ] grammar correction and some other minor details
 
 
 
-
-# Notes
 
 # Empirical results and training configurations
 ## Cartpole
@@ -194,6 +192,18 @@ The graphics above showcase the courbes for the reward and moving average of the
 
 
 # Summary 
+
+The obtained results do not demonstrate an inherent limitation of Q learning based approaches. The issue stems from the fact that the $$Q$$ estimates are not accurate, they are biased because of $$\max$$ operator. The issue in of Q learning based approaches is overestimation.
+
+First, to illustrate the problem, let have two rv, $$X_{1}$$ and $$X_{2}$$, one can proove that : 
+
+$$
+
+E[max(X_{1}, X_{2})] \geq max(E[X_{1}] , E[X_{2}] )
+
+
+The $$max$$ operator selects the errors in positive direction of the noise, thus creating overestimation bias.
+One possible solution, is to decorrelate the process of action selection and the evaluation.
 
 
 
