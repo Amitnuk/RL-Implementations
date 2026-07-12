@@ -41,7 +41,7 @@ Then, the Q-learning updates are done with mini-batches sampled uniformly from  
 
 * Target network.
 
-To improve the stability, a second network (target network) is introduced to generate the targets $$y_{j}=r_{j} + \gamma\max_{a'} Q(s^',a^')$$. 
+To improve the stability, a second network (target network) is introduced to generate the targets $$y_{j}=r_{j} + \gamma\max_{a'} Q(s',a')$$. 
 
 
 
