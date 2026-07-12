@@ -113,7 +113,7 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 
 
 
-The graphics above showcase the courbes for the reward and moving average of the same object in evaluation, as we can see the agent learns to maintain the pole upright, converging to the max reward allowed for raw rewards collected and around 400 fot the average. The Q-value is model by MLP with two hidden layers with 512 and 128 neurons respectivelly, with a batch size of 64 and discount factor 1. The activation function is a ReLU and optimizer is Adam with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a exponentially decaying epsilon that starts from 1.0 and stops at 0.5. 
+The graphics above showcase the courbes for the reward and moving average of the same object in evaluation, as we can see the agent learns to maintain the pole upright, converging to the max reward allowed for raw rewards collected and around 400 fot the average. The Q-value is model by MLP with two hidden layers with 512 and 128 neurons respectivelly, with a batch size of 64 and discount factor 1. The activation function is a ReLU and optimizer is Adam with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a exponentially decaying epsilon that starts from 1.0 and stops at 0.5. The buffer size is 50000.
 
 
 ## lunar lander
@@ -137,8 +137,11 @@ The graphics above showcase the courbes for the reward and moving average of the
   </tr>
 </table>
 
+The graphics above showcase the courbes for the reward and moving average of the same object in evaluation, as we can see the agent learns to land on the lune, converging to 250 for raw rewards collected and around 10 for the average. The Q-value is model by MLP with two hidden layers with 256 and 256 neurons respectivelly, with a batch size of 64 and discount factor 0.99. The activation function is a ReLU and optimizer is Adam with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a exponentially decaying epsilon that starts from 1.0 and stops at 0.3. The buffer size is 50000.
 
-## lunar lander
+
+
+## mountain car
 
 <table>
   <tr>
@@ -159,11 +162,12 @@ The graphics above showcase the courbes for the reward and moving average of the
   </tr>
 </table>
 
+The graphics above showcase the courbes for the reward and moving average of the same object in evaluation, as we can see the agent learns to scape the valley, converging to -80 for raw rewards collected and around -180 for the average. The Q-value is model by MLP with two hidden layers with 64 and 64 neurons respectivelly, with a batch size of 32 and discount factor 0.99. The activation function is a ReLU and optimizer is Adam with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a linearly decaying epsilon that starts from 1.0 and stops at 0.25. The buffer size is 200000.
+
+
 
 ## Acrobot
-| Acrobot Average and Moving Average courbe|
-|----------|
-| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_acrobot.png)
+
 
 <table>
   <tr>
@@ -184,6 +188,10 @@ The graphics above showcase the courbes for the reward and moving average of the
   </tr>
 </table>
 
+The graphics above showcase the courbes for the reward and moving average of the same object in evaluation, as we can see the agent learns to swing the outer-link to reach the max target height, converging to -80 for raw rewards collected and around -180 for the average. The Q-value is model by MLP with two hidden layers with 256 and 256 neurons respectivelly, with a batch size of 64 and discount factor 0.99. The activation function is a ReLU and optimizer is Adam with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a linearly decaying epsilon that starts from 1.0 and stops at 0.3. The buffer size is 200000.
+
+
+
 
 # Summary 
 
@@ -193,35 +201,9 @@ The graphics above showcase the courbes for the reward and moving average of the
 
 [CS 285 : Deep RL, 2023](https://www.youtube.com/playlist?list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps).
 [Sutton, R.S., Bach, F., and Barto, A.G., 2018. Reinforcement learning: An introduction. Massachusetts: MIT Press Ltd.](https://www.andrew.cmu.edu/course/10-703/textbook/BartoSutton.pdf)
+[Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236)
+[Mathematical Foundations of Reinforcement Learning](https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning)
 
-
-python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env mountaincar --max_episodes 70000 --buffer_size 200000 --gamma 0.99 --behaviour_policy egreedy --batch_size 32 --optimizer 0 --lr 0.001251 --epsilon 1.0 --final_epsilon 0.00001 --decay_ratio 0.85 --seed 34
-
-hidden_units = (24,48) 
-
-works the best
-python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env mountaincar --max_episodes 7000 --buffer_size 500000 --gamma 0.99 --behaviour_policy egreedy --batch_size 32 --optimizer 1 --lr 0.0001251 --epsilon 0.5 --final_epsilon 0.1 --decay_ratio 0.2 --seed 34
-
-hidden_units = (168,48)
-
-
-best of the best
-python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env mountaincar --max_episodes 4000 --buffer_size 200000 --gamma 0.99 --behaviour_policy egreedy --batch_size 32 --optimizer 1 --lr 0.0001251 --epsilon 0.5 --final_epsilon 0.2 --decay_ratio 0.3 --seed 34
-
-hidden_units = (64,64) 
-
-if np.sum(Agent.episode_timestep) % 7000 == 0 :
-
-
-# Training Config
-python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env cartpole --max_episodes 4000 --buffer_size 50000 --gamma 1 --behaviour_policy egreedyexpdecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.5 --decay_ratio 0.85 --seed 34
-
-
-python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env lunarlander --max_episodes 4000 --buffer_size 50000 --gamma 0.99 --behaviour_policy egreedyexpdecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.3 --decay_ratio 0.99 --seed 34
-
-python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env mountaincar --max_episodes 4000 --buffer_size 200000 --gamma 0.99 --behaviour_policy egreedylineardecay --batch_size 32 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.25 --decay_ratio 0.85 --seed 34
-
-python3 deep_rl/value_based/dqn/main.py --use_gpu --launch train --env acrobot  --max_episodes 4000 --buffer_size 200000 --gamma 0.99 --behaviour_policy egreedylineardecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1.0 --final_epsilon 0.3 --decay_ratio 0.85 --seed 34
 
 
 
