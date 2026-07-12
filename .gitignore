@@ -3,3 +3,5 @@
 *.pt
 events.out*
 *~
+*.ipynb
+*.csv

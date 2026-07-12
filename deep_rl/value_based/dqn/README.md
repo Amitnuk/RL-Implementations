@@ -91,6 +91,14 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 # Notes
 
 # Results
+## Graphs 
+### Cartpole
+| Average/Moving Average|
+|----------|
+| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png)
+
+
+
 Trained acrobot [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/acrobot)
 
 Trained cartpole [Model](https://github.com/Amitnuk/RL-Implementations/tree/main/results/dqn/cartpole)
