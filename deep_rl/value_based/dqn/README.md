@@ -198,9 +198,7 @@ The obtained results do not demonstrate an inherent limitation of Q learning bas
 First, to illustrate the problem, let have two rv, $$X_{1}$$ and $$X_{2}$$, one can proove that : 
 
 $$
-
 E[max(X_{1}, X_{2})] \geq max(E[X_{1}] , E[X_{2}] )
-
 $$
 
 The $$max$$ operator selects the errors in positive direction of the noise, thus creating overestimation bias.
