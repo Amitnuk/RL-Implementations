@@ -46,7 +46,7 @@ Car racing, balckjack, cliff walking, half cheetah, pusher, ant humanoid standup
 # TODO 
 - [X] [Neural Fitted Q Iteration](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/nfqi)
 - [X] [DQN](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/dqn)
-- [ ] [Double Q-Learning](https://arxiv.org/abs/1509.06461)
+- [X] [Double Q-Learning](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/ddqn)
 - [ ] [Reinforce](https://proceedings.neurips.cc/paper_files/paper/1999/file/464d828b85b0bed98e80ade0a5c43b0f-Paper.pdf)
 - [ ] [DDPG](https://arxiv.org/pdf/1509.02971)
 - [ ] [TD3](https://arxiv.org/abs/1802.09477)

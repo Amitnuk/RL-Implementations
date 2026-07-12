@@ -1,0 +1,259 @@
+import torch
+from torch import nn
+from torch import optim
+from torch.nn import MSELoss
+import numpy as np 
+import gymnasium as gym 
+from gymnasium.spaces import Box, Discrete
+from common.buffers.replaybuffer import ReplayBuffer
+import random
+import imageio.v2 as imageio
+import matplotlib.pyplot as plt
+from network import FCQNetwork
+from itertools import count
+
+
+class DoubleDQNAgent :
+    def __init__(self,
+                 env_name:str,
+                 value_model_fn,
+                 value_optimizer_fn,
+                 value_optimizer_lr:float,
+                 training_strategy_fn,
+                 gamma:float=0.99,
+                 batch_size:int=100,
+                 epochs:int=40,
+                 seed:int=34,
+                 update_target_every_steps:int=10,
+                 mode:str=eval) :
+        
+        self.mode = mode
+        self.env_name = env_name
+        self.name = "ddqn"
+     
+        if self.mode == "eval" :
+            self.Env = gym.make(id=self.env_name, render_mode="human")
+            
+        
+        if self.mode == "train" :
+            self.Env = gym.make(id=self.env_name)
+            
+        print(f"Selected env = {self.env_name}")        
+
+        torch.manual_seed(seed=seed)
+        torch.cuda.manual_seed(seed=seed)
+        np.random.seed(seed=seed)
+        random.seed(seed)
+
+        self.Env.action_space.seed(seed=seed)
+
+        if isinstance(self.Env.action_space,Discrete) :
+            self.action_dim =self.Env.action_space.n
+            self.low  = 0
+            self.high = int(self.action_dim) - 1
+        else:
+            raise NotImplementedError(f"Unsupported action space: {type(self.Env.action_space)}")
+
+        if isinstance(self.Env.observation_space,Box) :
+            self.observation_dim = self.Env.observation_space.shape[0]
+        elif isinstance(self.Env.observation_space,Discrete) :
+            self.observation_dim =self.Env.observation_space.n
+        else:
+            raise NotImplementedError(f"Unsupported onservation space: {type(self.Env.observation_space)}")
+        
+        self.nS, self.nA = self.observation_dim, self.action_dim
+        print(f"number of states S = {self.nS}\nnumber of actions A = {self.nA}")
+        print(f"Single State = {self.Env.observation_space.sample()}\nSingle Action = {self.Env.action_space.sample()}")
+       
+        self.cummulative_reward_per_episdode = 0
+
+        
+        self.online_model:FCQNetwork = value_model_fn(self.nS, self.nA)
+        self.target_model:FCQNetwork = value_model_fn(self.nS, self.nA)
+
+        self.value_optimizer_lr   = value_optimizer_lr
+        self.optimizer    = value_optimizer_fn(self.online_model,self.value_optimizer_lr)
+        self.training_strategy_fn = training_strategy_fn
+        self.batch_size=  batch_size
+        
+        self.seed = seed
+        self.gamma = gamma
+        self.batch_size =batch_size
+
+        self.epochs = epochs
+        self.buffer = ReplayBuffer(batch_size=self.batch_size)
+        self.learning_rate = value_optimizer_lr
+        self.update_target_every_steps= update_target_every_steps
+        self.n_warmup_batches = 8
+        self.loss = 0
+        
+        self.episode_reward = [] 
+        self.episode_reward_eval = []
+        self.episode_reward_std_eval = []
+        self.episode_timestep = []
+        print("DQNAgent")
+
+
+    def act(self,state) :
+        return self.iteration_step(state=state)
+        
+    def load(self):
+        return self.buffer.load()
+    
+    def store(self,experience) :
+        self.buffer.store(experience=experience)
+
+    def clear(self) :
+         self.buffer.clear()
+
+    def iteration_step(self, state) :
+        
+        action = self.training_strategy_fn.select_discret_action(self.online_model,state)
+        new_state, reward, terminal, truncated, _ = self.Env.step(action=action)
+        is_terminated = terminal or truncated
+        experience = (state, action, reward, new_state, float(terminal))
+        self.episode_reward[-1] += reward
+        self.episode_timestep[-1] += 1
+        self.store(experience=experience)
+        return new_state, is_terminated 
+    
+    def interact(self, episode, egreedy_like_p, writer, fqi_debug_step, debug_results) :
+
+        self.episode_reward.append(0.0)   
+        self.episode_reward_eval.append(0.0)
+        self.episode_reward_std_eval.append(0.0)
+        self.episode_timestep.append(0.0)
+        state, _ = self.Env.reset(seed=self.seed + episode -1)
+       
+
+        for step in count() :
+            state, is_terminated = self.act(state)
+            
+            if len(self.buffer) >= self.batch_size * self.n_warmup_batches :
+                experience_batch = self.buffer.sample()
+                experiences = self.online_model.load(experience_batch)
+                self.update(experiences=experiences)
+               
+                    
+                debug_results = fqi_debug_step(self, experiences[0])
+                debug_results["loss"] = self.loss
+                writer.add_scalar("Train/Loss",self.loss, step)
+                if egreedy_like_p :
+                    writer.add_scalar("Train/Epsilon",self.training_strategy_fn.epsilon, episode)
+                
+                EVAL_MODE = True
+                
+            if np.sum(self.episode_timestep) % self.update_target_every_steps == 0 :
+                self.update_target_network()
+
+
+            
+            if is_terminated :
+                return debug_results
+
+
+    
+    def update(self, experiences) :
+        states, actions, rewards, next_states, is_terminated = experiences
+        
+        argmax_a_q_sa = self.online_model(next_states).max(1)[1] ## gets the max action index from online model
+        
+        q_sp = self.target_model(next_states).detach()
+        max_a_q_sp = q_sp[range(self.batch_size), argmax_a_q_sa].unsqueeze(1) # get the values of target model using max action index from online model
+        td_target_qsa = rewards +  self.gamma * max_a_q_sp * ( 1 - is_terminated )
+        
+        
+        q_sa     = self.online_model(states).gather(1, actions)
+        td_errors  = td_target_qsa - q_sa
+
+        value_losses = td_errors.pow(2).mul(0.5).mean()
+
+        self.loss = value_losses.detach().cpu().numpy()
+ 
+        self.optimizer.zero_grad()
+        value_losses.backward()
+        self.optimizer.step()
+
+        #torch.nn.utils.clip_grad_norm_(self.online_model.parameters(), 
+        #                               30)
+
+    def update_target_network(self) :
+
+        for online, target in zip(self.online_model.parameters(), self.target_model.parameters()) :
+            target.data.copy_(online.data)
+
+    def evaluate(self, max_episodes:int=1):
+
+        rewards=[]
+        state, _ = self.Env.reset()
+        experience = []
+        for i in range( max_episodes ) :
+            if self.mode == "eval" :
+                print(f"episode[{i+1}/{max_episodes}]")
+            rewards.append(0.0)
+            while True :
+                
+                with torch.inference_mode() :
+                    q_values = self.online_model(state).detach().cpu().data.numpy().squeeze()
+
+                state, reward, terminal, truncated, _=  self.Env.step( np.argmax( q_values  ) )
+
+                rewards[-1] += reward
+                if terminal or truncated :
+                    if self.mode == "eval" :
+                        state, _ = self.Env.reset()
+                    break
+
+
+        return np.mean(rewards), np.std(rewards), terminal
+        
+    def create_gif(self,max_episodes:int=1  ) :
+        images = []
+
+        self.Env = gym.make(id=self.env_name, render_mode="rgb_array")
+        state, _ = self.Env.reset()
+
+        for _ in  range(max_episodes) :
+            while True :
+
+                frame = self.Env.render()      # RGB image (numpy array)
+                images.append(frame)
+
+
+                #print(images[0].shape)
+                
+                
+                with torch.inference_mode() :
+                        q_values = self.online_model(state).detach().cpu().data.numpy().squeeze()
+
+                state, _, terminated, truncated, _ = self.Env.step(np.argmax( q_values  ))
+
+                if terminated or truncated:
+                    state, _ = self.Env.reset()
+                    break
+
+        print("num frames:", len(images))
+        FileToSave = f"./experiments/figures/{self.name}_{self.env_name[:-3].lower()}.gif"
+       
+        with imageio.get_writer(FileToSave, mode="I",fps=30,loop=0 ) as writer:
+             for img in images:
+                 writer.append_data(img)
+
+    def q_value_stats(self, q_values):
+        """
+        q_values: tensor of shape [batch_size, num_actions]
+        """
+
+        top2 = torch.topk(q_values, k=2, dim=1).values
+        gap = top2[:, 0] - top2[:, 1]
+        return {
+            "q_mean": q_values.mean().item(),
+            "q_max": q_values.max().item(),
+            "q_min": q_values.min().item(),
+            "q_std": q_values.std().item(),
+            "mean_gap": gap.mean().item(),
+            "min_gap": gap.min().item(),
+            "max_gap": gap.max().item(),
+            "loss":0.0
+        }
+    

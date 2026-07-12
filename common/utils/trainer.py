@@ -70,9 +70,9 @@ class Trainer :
 
             print("EVAL")
             EVAL_MODE = True
-            evaluation_score, done = Agent.evaluate()
+            evaluation_score, done, evaluation_std = Agent.evaluate()
             Agent.episode_reward_eval[-1] = evaluation_score
-            
+            Agent.episode_reward_std_eval[-1] = evaluation_std
             
             debug_message =f"\nepisode: {episode}"
             debug_message +=f"\ntraining score last episode: {Agent.episode_reward[-1]:.2f}"
@@ -96,9 +96,17 @@ class Trainer :
 
             debug_message +=f"\nevaluation score last episode: {Agent.episode_reward_eval[-1]:.2f}"
             debug_message +=f"\nevaluation score for last 10 episodes : {np.mean(Agent.episode_reward_eval[-10:]):.2f}"
+            debug_message +=f"\nevaluation std score for last 10 episodes : {np.mean(Agent.episode_reward_std_eval[-10:]):.2f}"
+
             debug_message +=f"\nevaluation score for last 100 episodes : {np.mean(Agent.episode_reward_eval[-100:]):.2f}"
-            debug_message +=f"\nevaluation score for last 1000 episodes : {np.mean(Agent.episode_reward_eval[-100:]):.2f}"
+            debug_message +=f"\nevaluation std score for last 100 episodes : {np.mean(Agent.episode_reward_std_eval[-100:]):.2f}"
+
+            debug_message +=f"\nevaluation score for last 1000 episodes : {np.mean(Agent.episode_reward_eval[-1000:]):.2f}"
+            debug_message +=f"\nevaluation std score for last 1000 episodes : {np.mean(Agent.episode_reward_std_eval[-1000:]):.2f}"
+
             debug_message +=f"\nevaluation score for all episodes : {np.mean(Agent.episode_reward_eval):.2f}"
+            debug_message +=f"\nevaluation std score for all episodes : {np.mean(Agent.episode_reward_std_eval):.2f}"
+
 
             if egreedy_like_p :
                 debug_message +=f"\nepsilon : {behavior_policy.epsilon:.4f}"
@@ -115,6 +123,11 @@ class Trainer :
             self.writer.add_scalar("Eval/AverageRewardMean10",np.mean(Agent.episode_reward_eval[-10:]),episode)
             self.writer.add_scalar("Eval/AverageRewardMean100",np.mean(Agent.episode_reward_eval[-100:]),episode)
             self.writer.add_scalar("Eval/AverageRewardMean1000",np.mean(Agent.episode_reward_eval[-1000:]),episode)
+
+            self.writer.add_scalar("Eval/StdRewardMean",np.mean(Agent.episode_reward_std_eval), episode)
+            self.writer.add_scalar("Eval/AverageStdRewardMean10",np.mean(Agent.episode_reward_std_eval[-10:]),episode)
+            self.writer.add_scalar("Eval/AverageStdRewardMean100",np.mean(Agent.episode_reward_std_eval[-100:]),episode)
+            self.writer.add_scalar("Eval/AverageStdRewardMean1000",np.mean(Agent.episode_reward_std_eval[-1000:]),episode)
 
             if self.best_agent_score <= evaluation_score  and evaluation_score > self.lowest_evaluation_score :
                 checkpoint = {
