@@ -95,7 +95,8 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 ### Cartpole
 | Cartpole reward and average reward courbe| Animation
 |----------|----------|
-| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png) ![Cartpole](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dnq_cartpole.gif)
+| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png) | 
+  ![Cartpole](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dnq_cartpole.gif)
 
 The graphics above showcase the courbes for the reward and moving average of the same object in evaluation, as we can see the agent learns to maintain the pole upright, converging to the max reward allowed for raw rewards collected and around 400 fot the average. The Q-value is model by MLP with two hidden layers with 512 and 128 neurons respectivelly, with a batch size of 64 and discount factor 1. The activation function is a ReLU and optimizer is Adam with a learning rate of 0.0003. The behaviour policy is epsilon greedy with a exponentially decaying epsilon that starts from 1.0 and stops at 0.5. 
 
