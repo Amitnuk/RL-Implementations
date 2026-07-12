@@ -41,7 +41,12 @@ Then, the Q-learning updates are done with mini-batches sampled uniformly from  
 
 * Target network.
 
-To improve the stability, a second network (target network) is introduced to generate the targets $$y_{j}=r_{j} + \gamma \max_{a^'} Q^{\ast}(s^', a^'; \theta^-)$$. This technique mitigates the moving target issue. The target network trails behind the main network, approximating the current estimate of the optimal action-value function, where its weights of the target network $$Q(s, a; \theta^-)$$ are kept unchanged for every *M* steps. At the *Mth* step after performing gradient descent with respect to $$\theta$$, the second network is reset using the main network weights and the process repeats. 
+To improve the stability, a second network (target network) is introduced to generate the targets $$ y_{j}=r_{j} + \gamma $$. 
+
+
+
+
+This technique mitigates the moving target issue. The target network trails behind the main network, approximating the current estimate of the optimal action-value function, where its weights of the target network $$Q(s, a; \theta^-)$$ are kept unchanged for every *M* steps. At the *Mth* step after performing gradient descent with respect to $$\theta$$, the second network is reset using the main network weights and the process repeats. 
 
 The algorithm can be see bellow 
 
