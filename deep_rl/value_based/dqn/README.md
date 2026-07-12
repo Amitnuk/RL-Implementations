@@ -93,9 +93,33 @@ python3 deep_rl/value_based/dqn/main.py --use_gpu --launch eval --env acrobot
 # Results
 ## Graphs 
 ### Cartpole
-| Average/Moving Average|
+| Cartpole Average and Moving Average courbe|
 |----------|
 | ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png)
+
+
+### Cartpole
+| Cartpole Average and Moving Average courbe|
+|----------|
+| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png)
+
+
+### lunarlander
+| Lunar lander Average and Moving Average courbe|
+|----------|
+| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_lunarlander.png)
+
+
+### Mountaincar
+| Mountain car Average and Moving Average courbe|
+|----------|
+| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_mountaincar.png)
+
+
+### Acrobot
+| Acrobot Average and Moving Average courbe|
+|----------|
+| ![](https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_acrobot.png)
 
 
 
