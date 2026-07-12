@@ -157,7 +157,7 @@ The graphics above showcase the courbes for the reward and moving average of the
       <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_mountaincar.png?raw=true" width="400"/>
     </td>
     <td>
-      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dqn_mountaincar.gif?raw=true" width="400"/>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dnq_mountaincar.gif?raw=true" width="400"/>
     </td>
   </tr>
 </table>
