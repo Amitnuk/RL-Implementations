@@ -12,7 +12,7 @@ These environments are part of [Gymnasium](https://gymnasium.farama.org/index.ht
 ## Introduction
 
 ### Motivation 
-The core ideas behind DDQN are the same as those of DQN, where the i.i.d issue is mitigated with replay buffer and non stationarity of the bootstrapped issue is mitigated with a target network.  As stated in [2](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/dqn), DQN tends to overestimates the Q values, due to the maximization operator. In the original DQN, the action selection and evaluation of Q are correlated, while DDQN decorrelates them.
+The core ideas behind DDQN are the same as those of DQN, where the i.i.d issue is mitigated with replay buffer and non stationarity of the bootstrapped issue is mitigated with a target network.  As stated in [[2](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/dqn)], DQN tends to overestimates the Q values, due to the maximization operator. In the original DQN, the action selection and evaluation of Q are correlated, while DDQN decorrelates them.
 
 
 ### Background
@@ -52,15 +52,15 @@ y = r + \gamma Q_{\phi^-}(s', \arg\max_{a'} Q_{\phi}(s', a'))
 $$
 
 
-In double q learning, both networks alternate roles during training. DDQN has a dedicated target network so this switching is not necessary.
+In double Q learning, both networks alternate roles during training. DDQN has a dedicated target network so this switching is not necessary.
 
 
 # Usage 
 ## Training
-
+python3 deep_rl/value_based/ddqn/main.py --use_gpu --launch train --env cartpole --max_episodes 4000 --buffer_size 50000 --gamma 1 --behaviour_policy egreedyexpdecay --batch_size 64 --optimizer 0 --lr 0.0003 --epsilon 1 --final_epsilon 0.1 --decay_ratio 0.85 --seed 34
 
 ## Testing
-
+python3 deep_rl/value_based/ddqn/main.py --use_gpu --launch eval --env cartpole --max_episodes 1
 
 # TODO
 
@@ -94,7 +94,7 @@ In double q learning, both networks alternate roles during training. DDQN has a 
       <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_cartpole.png?raw=true" width="400"/>
     </td>
     <td>
-      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dqn_cartpole.gif?raw=true" width="400"/>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/ddqn_cartpole.gif?raw=true" width="400"/>
     </td>
   </tr>
 </table>
@@ -117,7 +117,7 @@ In double q learning, both networks alternate roles during training. DDQN has a 
       <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_lunarlander.png?raw=true" width="400"/>
     </td>
     <td>
-      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dqn_lunarlander.gif?raw=true" width="400"/>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/ddqn_lunarlander.gif?raw=true" width="400"/>
     </td>
   </tr>
 </table>
@@ -141,7 +141,7 @@ In double q learning, both networks alternate roles during training. DDQN has a 
       <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_mountaincar.png?raw=true" width="400"/>
     </td>
     <td>
-      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dnq_mountaincar.gif?raw=true" width="400"/>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/ddnq_mountaincar.gif?raw=true" width="400"/>
     </td>
   </tr>
 </table>
@@ -167,7 +167,7 @@ In double q learning, both networks alternate roles during training. DDQN has a 
       <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/plots/reward_curve_acrobot.png?raw=true" width="400"/>
     </td>
     <td>
-      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/dqn_acrobot.gif?raw=true" width="400"/>
+      <img src="https://github.com/Amitnuk/RL-Implementations/blob/main/experiments/figures/ddqn_acrobot.gif?raw=true" width="400"/>
     </td>
   </tr>
 </table>
