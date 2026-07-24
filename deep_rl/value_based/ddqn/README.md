@@ -12,12 +12,45 @@ These environments are part of [Gymnasium](https://gymnasium.farama.org/index.ht
 ## Introduction
 
 ### Motivation 
-
+The core ideas behind DDQN are the same as those of DQN, where the i.i.d issue is mitigated with replay buffer and non stationarity of the bootstrapped issue is mitigated with a target network.  As stated in [2](https://github.com/Amitnuk/RL-Implementations/tree/main/deep_rl/value_based/dqn), DQN tends to overestimates the Q values, due to the maximization operator. In the original DQN, the action selection and evaluation of Q are correlated, while DDQN decorrelates them.
 
 
 ### Background
 
+#### Double Q learning 
 
+
+$
+Q_{\phi A}(s,a) \leftarrow r + \gamma Q_{\phi B}(s',\arg\max_{a'} Q_{\phi A}(s', a'))
+
+Q_{\phi B}(s,a) \leftarrow r + \gamma Q_{\phi A}(s',\arg\max_{a'} Q_{\phi B}(s', a'))
+
+$
+
+The idea is to use two networks, one that selects the action while the other evalutates Q. This reduces the correlation between the action selection and the Q value action evaluation.
+
+Fortunatily, we already have two network, the target network and the main network, which we can use without adding any overhead. 
+
+The main network selects the action :
+
+$
+a^{\ast}  = \arg\max_{a'} Q_{\phi}(s', a'))
+$
+
+The target network evaluates the action :
+
+$
+Q_{\phi^-}(s',a^{\ast})
+$
+
+
+Together, this gives:
+$
+y = r + \gamma Q_{\phi^-}(s', \arg\max_{a'} Q_{\phi}(s', a'))
+$
+
+
+In double q learning, both networks alternate roles during training. DDQN has a dedicated target network so this switching is not necessary.
 
 
 # Usage 
@@ -30,13 +63,13 @@ These environments are part of [Gymnasium](https://gymnasium.farama.org/index.ht
 # TODO
 
 - [X] train module
-- [ ] training cartpole 
+- [X] training cartpole 
 - [ ] training lundar lander
 - [ ] training mountain car
 - [ ] training acrobot
 - [ ] testing module
 - [ ] plots
-- [ ] explanation
+- [X] explanation
 - [ ] requirement and a usage section
 - [ ] grammar correction and some other minor details
 
