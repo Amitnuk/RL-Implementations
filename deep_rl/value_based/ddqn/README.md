@@ -21,10 +21,12 @@ The core ideas behind DDQN are the same as those of DQN, where the i.i.d issue i
 
 
 $
-Q_{\phi A}(s,a) \leftarrow r + \gamma Q_{\phi B}(s',\arg\max_{a'} Q_{\phi A}(s', a'))
+Q_{\phi(A)}(s,a) \leftarrow r + \gamma Q_{\phi B}(s',\arg\max_{a'} Q_{\phi A}(s', a'))
+$
 
-Q_{\phi B}(s,a) \leftarrow r + \gamma Q_{\phi A}(s',\arg\max_{a'} Q_{\phi B}(s', a'))
 
+$
+Q_{\phi B}(s,a) = r + \gamma Q_{\phi A}(s',\arg\max_{a'} Q_{\phi B}(s', a'))
 $
 
 The idea is to use two networks, one that selects the action while the other evalutates Q. This reduces the correlation between the action selection and the Q value action evaluation.
@@ -45,6 +47,7 @@ $
 
 
 Together, this gives:
+
 $
 y = r + \gamma Q_{\phi^-}(s', \arg\max_{a'} Q_{\phi}(s', a'))
 $
