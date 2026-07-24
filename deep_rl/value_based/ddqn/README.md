@@ -21,7 +21,7 @@ The core ideas behind DDQN are the same as those of DQN, where the i.i.d issue i
 
 
 $
-Q_{\phi(A)}(s,a) 
+Q_{\phi}(s,a) 
 $
 
 $
