@@ -20,13 +20,12 @@ The core ideas behind DDQN are the same as those of DQN, where the i.i.d issue i
 #### Double Q learning 
 
 
-$
-Q_{\phi}(s,a) 
-$
+$$
+Q_{\phi(A)}(s,a) \leftarrow r + \gamma Q_{\phi B}(s',\arg\max_{a'} Q_{\phi A}(s', a'))
 
-$
-Q_{\phi B}(s,a) = r + \gamma Q_{\phi A}(s',\arg\max_{a'} Q_{\phi B}(s', a'))
-$
+
+Q_{\phi(B)}(s,a) \leftarrow  r + \gamma Q_{\phi A}(s',\arg\max_{a'} Q_{\phi B}(s', a'))
+$$
 
 The idea is to use two networks, one that selects the action while the other evalutates Q. This reduces the correlation between the action selection and the Q value action evaluation.
 
@@ -34,22 +33,22 @@ Fortunatily, we already have two network, the target network and the main networ
 
 The main network selects the action :
 
-$
+$$
 a^{\ast}  = \arg\max_{a'} Q_{\phi}(s', a'))
-$
+$$
 
 The target network evaluates the action :
 
-$
+$$
 Q_{\phi^-}(s',a^{\ast})
-$
+$$
 
 
 Together, this gives:
 
-$
+$$
 y = r + \gamma Q_{\phi^-}(s', \arg\max_{a'} Q_{\phi}(s', a'))
-$
+$$
 
 
 In double q learning, both networks alternate roles during training. DDQN has a dedicated target network so this switching is not necessary.
